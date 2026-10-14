@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+
+    "Zero" tab in Stores > Configuration; Zero modules add their sections to it.
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="zero" translate="label" sortOrder="10">
+            <label>Zero</label>
+        </tab>
+        <section id="zero_theme" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Theme</label>
+            <tab>zero</tab>
+            <resource>Zero_Core::config_theme</resource>
+            <group id="fallback" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Pages on Another Theme</label>
+                <comment>For extensions not adapted to Zero yet: their pages render with another theme (typically Luma), so their RequireJS/Knockout frontend keeps working. Adapted extensions ship a compat module instead; bin/magento zero:compat:report lists which is which.</comment>
+                <field id="routes" translate="label comment" type="textarea" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Pages</label>
+                    <comment><![CDATA[One per line, * as wildcard, matched against "front name/controller/action" and the URL path, e.g. <code>rma/*</code>, <code>amasty_rma/guest/*</code>, <code>blog/*</code>. Lines starting with # are ignored.]]></comment>
+                </field>
+                <field id="theme" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Theme for These Pages</label>
+                    <source_model>Zero\Core\Model\Config\Source\FrontendThemes</source_model>
+                </field>
+            </group>
+            <group id="ui" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Component Library</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Public at /zero/ui/</label>
+                    <comment>The component library is in the admin at Content > Design > UI Components, whatever this says. Yes also opens /zero/ui/ to everyone (a demo, a design review without admin access); keep it No on a live store. Never indexed by search engines.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="social" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Sharing in Social Media</label>
+                <comment>Open Graph and Twitter card tags: the title, text and picture shown when a link to the store is shared on Facebook, LinkedIn, X, Telegram, WhatsApp, Slack and the like. Products, categories, CMS pages and blog posts describe themselves; other pages use their title and meta description.</comment>
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="default_image" translate="label comment" type="image" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Image</label>
+                    <comment>For pages without a picture of their own (the home page, search, categories without an image). 1200 × 630 px works everywhere. JPG or PNG.</comment>
+                    <backend_model>Magento\Config\Model\Config\Backend\Image</backend_model>
+                    <upload_dir config="system/filesystem/media" scope_info="1">zero/social</upload_dir>
+                    <base_url type="media" scope_info="1">zero/social</base_url>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="twitter_site" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>X (Twitter) Account</label>
+                    <comment>@yourstore, shown on the card as the site's account. Optional.</comment>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

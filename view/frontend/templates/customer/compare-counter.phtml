@@ -1,0 +1,20 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Fragment for `zero/customer/comparecounter`. No `load` trigger on the root
+ * (see customer/wishlist-counter.phtml).
+ *
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Zero\Core\ViewModel\CompareCounter $viewModel
+ */
+$viewModel = $block->getData('viewModel');
+$count = $viewModel->getItemCount();
+?>
+<span class="counter qty"<?= $count > 0 ? '' : ' hidden' ?>
+      hx-get="<?= $escaper->escapeUrl($block->getUrl('zero/customer/comparecounter')) ?>"
+      hx-trigger="compare:updated from:body"
+      hx-swap="outerHTML">
+    <?= $count > 0 ? $escaper->escapeHtml($count === 1 ? __('%1 item', $count) : __('%1 items', $count)) : '' ?>
+</span>

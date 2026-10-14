@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Adds CountryRegionProvider to the registration form (as in
+ * customer_address_form.xml). Also covers multishipping/checkout/register,
+ * which reuses this handle.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="customer_form_register">
+            <arguments>
+                <argument name="country_region_provider" xsi:type="object">
+                    Zero\Core\ViewModel\Directory\CountryRegionProvider
+                </argument>
+            </arguments>
+        </referenceBlock>
+    </body>
+</page>

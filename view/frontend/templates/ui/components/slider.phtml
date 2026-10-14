@@ -1,0 +1,24 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Component library example (see ViewModel\UiComponents).
+ *
+ * @var \Magento\Framework\Escaper $escaper
+ */
+?>
+<div class="flex justify-end gap-2 mb-3">
+    <button type="button" class="btn btn-circle btn-sm" data-scroller-prev="#ui-slider-track"
+            aria-label="<?= $escaper->escapeHtmlAttr(__('Previous products')) ?>">&lsaquo;</button>
+    <button type="button" class="btn btn-circle btn-sm" data-scroller-next="#ui-slider-track"
+            aria-label="<?= $escaper->escapeHtmlAttr(__('Next products')) ?>">&rsaquo;</button>
+</div>
+<div id="ui-slider-track" class="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2"
+     tabindex="0" role="region" aria-label="<?= $escaper->escapeHtmlAttr(__('New Products')) ?>">
+    <?php foreach (range(1, 8) as $i): ?>
+        <div class="shrink-0 snap-start w-[70%] sm:w-[45%] lg:w-1/4 h-32 bg-base-200 grid place-items-center">
+            <?= (int) $i ?>
+        </div>
+    <?php endforeach; ?>
+</div>

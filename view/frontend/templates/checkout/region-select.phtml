@@ -1,0 +1,43 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Fragment for `zero/checkout/regions`: a region <select> for the requested
+ * country_id, or a free-text input when the country has no region list.
+ * Shared by checkout and the customer address/registration forms.
+ *
+ * Optional `prefix` param (checkout billing address): gives the second
+ * country→region pair its own id/name, so a page never has two `region_id`
+ * fields. Without it the output is the original `region_id`/`region-field`.
+ *
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Zero\Core\ViewModel\Directory\CountryRegionProvider $viewModel
+ */
+$viewModel = $block->getData('viewModel');
+$countryId = (string) $block->getRequest()->getParam('country_id', 'US');
+$regions = $viewModel->getRegionsForCountry($countryId);
+$prefix = (string) $block->getRequest()->getParam('prefix', '');
+$fieldName = $prefix !== '' ? $prefix . '_region_id' : 'region_id';
+$freeTextFieldName = $prefix !== '' ? $prefix . '_region' : 'region';
+$fieldId = $prefix !== '' ? $prefix . '_region_id' : 'region_id';
+$containerId = $prefix !== '' ? $prefix . '-region-field' : 'region-field';
+// Browser autofill section, matching the address fields around it.
+$autocomplete = ($prefix === 'billing' ? 'billing' : 'shipping') . ' address-level1';
+?>
+<div id="<?= $escaper->escapeHtmlAttr($containerId) ?>" class="field">
+    <label class="label" for="<?= $escaper->escapeHtmlAttr($fieldId) ?>"><?= $escaper->escapeHtml(__('State/Province')) ?></label>
+    <?php if (!empty($regions)) : ?>
+        <select name="<?= $escaper->escapeHtmlAttr($fieldName) ?>" id="<?= $escaper->escapeHtmlAttr($fieldId) ?>" autocomplete="<?= $escaper->escapeHtmlAttr($autocomplete) ?>" class="select select-bordered w-full">
+            <option value=""><?= $escaper->escapeHtml(__('Please select a region')) ?></option>
+            <?php foreach ($regions as $regionId => $name) : ?>
+                <option value="<?= $escaper->escapeHtmlAttr((string) $regionId) ?>">
+                    <?= $escaper->escapeHtml($name) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    <?php else : ?>
+        <input type="text" name="<?= $escaper->escapeHtmlAttr($freeTextFieldName) ?>" id="<?= $escaper->escapeHtmlAttr($fieldId) ?>" autocomplete="<?= $escaper->escapeHtmlAttr($autocomplete) ?>" class="input input-bordered w-full"
+               placeholder="<?= $escaper->escapeHtmlAttr(__('State/Province')) ?>" />
+    <?php endif; ?>
+</div>

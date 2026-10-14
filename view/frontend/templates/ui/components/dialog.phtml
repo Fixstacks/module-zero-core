@@ -1,0 +1,21 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Component library example (see ViewModel\UiComponents).
+ *
+ * @var \Magento\Framework\Escaper $escaper
+ */
+?>
+<button type="button" class="btn btn-outline" data-dialog-open="#ui-dialog"><?= $escaper->escapeHtml(__('Size guide')) ?></button>
+<dialog id="ui-dialog" class="modal" aria-labelledby="ui-dialog-title">
+    <div class="modal-box">
+        <h3 id="ui-dialog-title" class="text-lg font-semibold"><?= $escaper->escapeHtml(__('Size guide')) ?></h3>
+        <p class="py-4 text-sm"><?= $escaper->escapeHtml(__('Between two sizes? Take the larger one.')) ?></p>
+        <form method="dialog" class="modal-action">
+            <button class="btn btn-primary"><?= $escaper->escapeHtml(__('Close')) ?></button>
+        </form>
+    </div>
+    <form method="dialog" class="modal-backdrop"><button><?= $escaper->escapeHtml(__('Close')) ?></button></form>
+</dialog>

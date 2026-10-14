@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <!--
+            Strict script policy on the storefront: no inline scripts, eval or
+            inline event handlers (Zero's JavaScript lives in static files; data
+            goes in <script type="application/json">, which CSP doesn't run).
+            Report-only like core's default, so other themes' and extensions'
+            pages (Pages on Another Theme, stock checkout) keep working; Zero
+            Checkout enforces it (Zero_Checkout config.xml). To enforce it on
+            the whole storefront: csp/mode/storefront/report_only = 0.
+        -->
+        <csp>
+            <policies>
+                <storefront>
+                    <scripts>
+                        <inline>0</inline>
+                        <eval>0</eval>
+                        <event_handlers>0</event_handlers>
+                    </scripts>
+                </storefront>
+                <!-- Stock checkout (fallback): Knockout bindings need eval, as in core. -->
+                <storefront_checkout_index_index>
+                    <scripts>
+                        <eval>1</eval>
+                    </scripts>
+                </storefront_checkout_index_index>
+            </policies>
+        </csp>
+        <zero_theme>
+            <social>
+                <enabled>1</enabled>
+            </social>
+            <ui>
+                <enabled>0</enabled>
+            </ui>
+            <fallback>
+                <theme>Magento/luma</theme>
+                <routes/>
+            </fallback>
+        </zero_theme>
+    </default>
+</config>

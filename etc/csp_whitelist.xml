@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Product videos in the gallery (ViewModel\Product\GalleryVideo): the
+ * YouTube (privacy-enhanced) and Vimeo players, in frames only.
+ */
+-->
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="frame-src">
+            <values>
+                <value id="zero-youtube-nocookie" type="host">https://www.youtube-nocookie.com</value>
+                <value id="zero-vimeo-player" type="host">https://player.vimeo.com</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

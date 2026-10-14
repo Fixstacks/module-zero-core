@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Layout for Controller\Captcha\Refresh; the controller sets form_id per request.
+ */
+-->
+<layout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/layout_generic.xsd">
+    <body>
+        <block class="Magento\Captcha\Block\Captcha\DefaultCaptcha" name="zero.captcha.refresh"
+               template="Zero_Core::captcha/image.phtml" cacheable="false"/>
+    </body>
+</layout>

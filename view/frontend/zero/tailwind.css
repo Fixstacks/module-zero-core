@@ -1,0 +1,8 @@
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Picked up by the Zero theme build (scripts/collect-module-styles.mjs)
+ * while Zero_Core is enabled: Tailwind builds the classes its templates use.
+ */
+@source "../templates/**/*.phtml";

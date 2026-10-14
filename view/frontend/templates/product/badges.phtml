@@ -1,0 +1,28 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * "New" / "Sale -N%" badges (ViewModel\ProductBadges). One block,
+ * zero.product.badges (Zero_Core default.xml), serves every product card: list
+ * and item templates set `product` on it and render it per card; with no
+ * product it prints nothing. The product page has its own instance
+ * (catalog_product_view.xml) whose block class reads the viewed product.
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Zero\Core\ViewModel\ProductBadges $badgesViewModel
+ */
+$product = $block->getProduct();
+$badgesViewModel = $block->getData('badgesViewModel');
+$badges = $product && $badgesViewModel ? $badgesViewModel->getBadges($product) : [];
+?>
+<?php if ($badges): ?>
+    <span class="product-badges">
+        <?php foreach ($badges as $badge): ?>
+            <span class="product-badge product-badge-<?= $escaper->escapeHtmlAttr($badge['code']) ?>">
+                <?= $escaper->escapeHtml($badge['label']) ?>
+            </span>
+        <?php endforeach; ?>
+    </span>
+<?php endif; ?>

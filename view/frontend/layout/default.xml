@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Sitewide view-model wiring and module-owned blocks:
+ * - sale.reorder.sidebar gets LastOrderedItems (server-rendered instead of the
+ *   Knockout-only scaffold).
+ * - messages gets CookieMessages: flash messages arrive in the `mage-messages`
+ *   cookie, which stock only reads from Knockout, so without it no flash
+ *   message showed anywhere.
+ * - zero.session.bootstrap (header.container): see Controller\Session\Bootstrap
+ *   (the "Invalid Form Key" race fix).
+ * - zero.product.badges: "New" / "Sale" badges that product card templates
+ *   render per card (product/badges.phtml); on its own it prints nothing.
+ *
+ * Root must be <page>, not <layout id="default">: Page::initLayout() treats a
+ * <layout id="X"> file as "custom layout" and drops the default handle, which
+ * blanked the legacy loadLayout() search result pages.
+ *
+ * This is module layout, so it applies under EVERY theme: only add arguments to
+ * blocks or declare module-owned blocks/templates here. A theme template=
+ * override here breaks other themes (it fataled every page under Luma); those
+ * belong in the theme's Magento_Theme/layout/default.xml.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!-- Link previews in social networks and messengers (Model\Social\Tags). -->
+        <referenceBlock name="head.additional">
+            <block class="Zero\Core\Block\SocialTags" name="zero.social.tags"/>
+        </referenceBlock>
+        <referenceBlock name="sale.reorder.sidebar">
+            <arguments>
+                <argument name="lastOrderedItemsViewModel" xsi:type="object">Zero\Core\ViewModel\LastOrderedItems</argument>
+            </arguments>
+        </referenceBlock>
+        <referenceBlock name="messages">
+            <arguments>
+                <argument name="cookieMessagesViewModel" xsi:type="object">Zero\Core\ViewModel\CookieMessages</argument>
+            </arguments>
+        </referenceBlock>
+        <referenceContainer name="before.body.end">
+            <block class="Magento\Framework\View\Element\Template"
+                   name="zero.product.badges"
+                   template="Zero_Core::product/badges.phtml">
+                <arguments>
+                    <argument name="badgesViewModel" xsi:type="object">Zero\Core\ViewModel\ProductBadges</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+        <referenceContainer name="header.container">
+            <block class="Magento\Framework\View\Element\Template"
+                   name="zero.session.bootstrap"
+                   as="zero_session_bootstrap"
+                   template="Zero_Core::session/bootstrap.phtml"
+                   before="-"/>
+        </referenceContainer>
+    </body>
+</page>

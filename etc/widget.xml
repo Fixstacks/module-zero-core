@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+
+    "Recently Viewed/Compared Products" widgets. Stock's RecentlyViewed/
+    RecentlyCompared render only via Knockout (renderApp()), which this theme
+    doesn't load, so they would be blank.
+
+    1. Data: the block classes are the older, server-rendered
+       Magento\Reports\Block\Product\Widget\Viewed/Compared (deprecated but
+       complete). The viewed-product tracking observer is not wired in this
+       Magento version; Zero_Core re-wires it (etc/frontend/events.xml).
+       reports/options/enabled must be 1 (store config).
+    2. Rendering: per-visitor content inside a cacheable page can't reliably
+       see the customer session, so the templates here are cacheable shells
+       that hx-get the real content from Controller\Widget\Viewed/Compared
+       (private fragments).
+-->
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Widget:etc/widget.xsd">
+    <widget id="catalog_recently_viewed" class="Magento\Reports\Block\Product\Widget\Viewed"
+            placeholder_image="Magento_Catalog::images/product_widget_viewed.png">
+        <label translate="true">Recently Viewed Products</label>
+        <description translate="true">List of Products Recently Viewed by Visitor</description>
+        <parameters>
+            <parameter name="page_size" xsi:type="text" required="true" visible="true">
+                <label translate="true">Number of Products to display</label>
+                <value>5</value>
+            </parameter>
+            <parameter name="template" xsi:type="select" required="true" visible="true">
+                <label translate="true">Template</label>
+                <options>
+                    <option name="default" value="widget/viewed/shell/grid.phtml" selected="true">
+                        <label translate="true">Viewed Products Grid Template</label>
+                    </option>
+                    <option name="list" value="widget/viewed/shell/list.phtml">
+                        <label translate="true">Viewed Products List Template</label>
+                    </option>
+                    <option name="default_list" value="widget/viewed/shell/default_list.phtml">
+                        <label translate="true">Viewed Products Images and Names Template</label>
+                    </option>
+                    <option name="names_list" value="widget/viewed/shell/names_list.phtml">
+                        <label translate="true">Viewed Products Names Only Template</label>
+                    </option>
+                    <option name="images_list" value="widget/viewed/shell/images_list.phtml">
+                        <label translate="true">Viewed Products Images Only Template</label>
+                    </option>
+                </options>
+            </parameter>
+        </parameters>
+    </widget>
+    <widget id="catalog_recently_compared" class="Magento\Reports\Block\Product\Widget\Compared"
+            placeholder_image="Magento_Catalog::images/product_widget_compared.png">
+        <label translate="true">Recently Compared Products</label>
+        <description translate="true">List of Products Recently Compared by Visitor</description>
+        <parameters>
+            <parameter name="page_size" xsi:type="text" required="true" visible="true">
+                <label translate="true">Number of Products to display</label>
+                <value>5</value>
+            </parameter>
+            <parameter name="template" xsi:type="select" required="true" visible="true">
+                <label translate="true">Template</label>
+                <options>
+                    <option name="default" value="widget/compared/shell/grid.phtml" selected="true">
+                        <label translate="true">Compared Products Grid Template</label>
+                    </option>
+                    <option name="list" value="widget/compared/shell/list.phtml">
+                        <label translate="true">Compared Products List Template</label>
+                    </option>
+                    <option name="default_list" value="widget/compared/shell/default_list.phtml">
+                        <label translate="true">Compared Products Images and Names Template</label>
+                    </option>
+                    <option name="names_list" value="widget/compared/shell/names_list.phtml">
+                        <label translate="true">Compared Products Names Only Template</label>
+                    </option>
+                    <option name="images_list" value="widget/compared/shell/images_list.phtml">
+                        <label translate="true">Compared Products Images Only Template</label>
+                    </option>
+                </options>
+            </parameter>
+        </parameters>
+    </widget>
+</widgets>

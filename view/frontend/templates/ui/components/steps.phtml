@@ -1,0 +1,15 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Component library example (see ViewModel\UiComponents).
+ *
+ * @var \Magento\Framework\Escaper $escaper
+ */
+?>
+<ol class="steps w-full max-w-2xl">
+    <li class="step step-primary"><?= $escaper->escapeHtml(__('Address')) ?></li>
+    <li class="step step-primary" aria-current="step"><?= $escaper->escapeHtml(__('Shipping')) ?></li>
+    <li class="step"><?= $escaper->escapeHtml(__('Payment')) ?></li>
+</ol>

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<layout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/layout_generic.xsd">
+    <body>
+        <block class="Magento\Framework\View\Element\Template" name="zero.theme.messages" cacheable="false"
+               template="Zero_Core::theme/messages-fragment.phtml">
+            <arguments>
+                <argument name="cookieMessagesViewModel" xsi:type="object">Zero\Core\ViewModel\CookieMessages</argument>
+            </arguments>
+        </block>
+    </body>
+</layout>

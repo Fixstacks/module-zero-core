@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Checkout plugins/arguments live in Zero_Checkout's etc/frontend/di.xml.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Reaches every HTMX fragment controller implementing PrivateFragmentActionInterface — see Plugin\Controller\PreventFragmentCaching. -->
+    <type name="Zero\Core\Controller\PrivateFragmentActionInterface">
+        <plugin name="zero_core_prevent_fragment_caching" type="Zero\Core\Plugin\Controller\PreventFragmentCaching"/>
+    </type>
+    <!--
+        Fulltext\CollectionFactory is a virtualType, which di:compile can't
+        reflect as a type hint, so it is injected by name. See
+        ViewModel\SearchSuggest::getMatchingProducts().
+    -->
+    <type name="Zero\Core\ViewModel\SearchSuggest">
+        <arguments>
+            <argument name="fulltextCollectionFactory" xsi:type="object">
+                Magento\CatalogSearch\Model\ResourceModel\Fulltext\CollectionFactory
+            </argument>
+        </arguments>
+    </type>
+    <!-- Recently Compared's own getCount() reads a stale session-cached number — see Plugin\Reports\Block\Product\FixComparedCount. -->
+    <type name="Magento\Reports\Block\Product\Compared">
+        <plugin name="zero_core_fix_compared_count" type="Zero\Core\Plugin\Reports\Block\Product\FixComparedCount"/>
+    </type>
+    <!--
+        Lets catalog.topnav's ESI sub-request render on product pages (see
+        Plugin\Review\Block\Product\GuardReviewsWithoutProduct).
+    -->
+    <type name="Magento\Review\Block\Product\View">
+        <plugin name="zero_core_guard_reviews_without_product" type="Zero\Core\Plugin\Review\Block\Product\GuardReviewsWithoutProduct"/>
+    </type>
+    <!--
+        Store view and currency in the HTTP context for controllers that skip
+        AbstractAction (HTMX fragments, Zero Checkout); without them their
+        responses deleted the X-Magento-Vary cookie. See Plugin\Framework\App\ApplyStoreContext.
+    -->
+    <type name="Magento\Framework\App\ActionInterface">
+        <plugin name="zero_core_apply_store_context" type="Zero\Core\Plugin\Framework\App\ApplyStoreContext" sortOrder="10"/>
+    </type>
+    <!-- Magento 2.4.8 only: the built-in page cache keys on the X-Magento-Vary cookie, as 2.4.9 does. See the plugin. -->
+    <type name="Magento\PageCache\Model\App\Request\Http\IdentifierForSave">
+        <plugin name="zero_core_vary_cookie_in_cache_key" type="Zero\Core\Plugin\PageCache\UseVaryCookieInCacheKey"/>
+    </type>
+    <!-- Product image blocks get Model\Image\ProductPicture (WebP + srcset) — see the plugin. -->
+    <type name="Magento\Catalog\Block\Product\ImageFactory">
+        <plugin name="zero_core_add_picture_to_image" type="Zero\Core\Plugin\Catalog\Block\Product\AddPictureToImage"/>
+    </type>
+    <!-- Listed pages render with another theme — see Model\Theme\FallbackRoutes. -->
+    <type name="Magento\Theme\Model\View\Design">
+        <plugin name="zero_core_use_fallback_theme" type="Zero\Core\Plugin\Theme\Model\View\UseFallbackTheme"/>
+    </type>
+    <!-- Link preview tags: who describes the current page, tried in key order (Zero_Cms adds CMS pages). -->
+    <type name="Zero\Core\Model\Social\Tags">
+        <arguments>
+            <argument name="sources" xsi:type="array">
+                <item name="20_product" xsi:type="object">Zero\Core\Model\Social\Source\Product</item>
+                <item name="30_category" xsi:type="object">Zero\Core\Model\Social\Source\Category</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

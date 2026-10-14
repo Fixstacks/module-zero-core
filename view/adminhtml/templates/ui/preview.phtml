@@ -1,0 +1,40 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Content > Design > UI Components: the storefront component library of the
+ * chosen store view in a frame (its theme's CSS, language and direction),
+ * through a signed link valid for an hour. "Open in a new tab" when the
+ * admin and the storefront are on different hosts (frames then refused).
+ *
+ * @var \Magento\Backend\Block\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Zero\Core\ViewModel\Adminhtml\UiPreview $viewModel
+ */
+$viewModel = $block->getData('viewModel');
+$previewUrl = $viewModel->getPreviewUrl();
+$selected = $viewModel->getSelectedStoreId();
+?>
+<form method="get" action="<?= $escaper->escapeUrl($block->getUrl('*/*/index')) ?>" class="admin__fieldset"
+      style="display:flex;gap:1rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:1.5rem">
+    <div class="admin__field">
+        <label class="admin__field-label" for="zero-ui-store"><span><?= $escaper->escapeHtml(__('Store View')) ?></span></label>
+        <div class="admin__field-control">
+            <select id="zero-ui-store" name="store" class="admin__control-select">
+                <?php foreach ($viewModel->getStores() as $id => $name): ?>
+                    <option value="<?= (int) $id ?>"<?= $id === $selected ? ' selected' : '' ?>><?= $escaper->escapeHtml($name) ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+    <button type="submit" class="action-secondary"><span><?= $escaper->escapeHtml(__('Show')) ?></span></button>
+    <a href="<?= $escaper->escapeUrl($previewUrl) ?>" target="_blank" rel="noopener" class="action-default"
+       style="display:inline-block;padding:.6rem 1rem"><?= $escaper->escapeHtml(__('Open in a new tab')) ?></a>
+</form>
+<p style="margin-bottom:1rem">
+    <?= $escaper->escapeHtml(__('Each component as the storefront renders it, with its markup to copy into a template. The link is valid for an hour.')) ?>
+</p>
+<iframe id="zero-ui-preview" src="<?= $escaper->escapeUrl($previewUrl) ?>"
+        title="<?= $escaper->escapeHtmlAttr(__('UI Components')) ?>"
+        style="width:100%;height:calc(100vh - 260px);min-height:600px;border:1px solid #adadad;background:#fff"></iframe>

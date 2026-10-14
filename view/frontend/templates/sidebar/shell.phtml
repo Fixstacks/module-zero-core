@@ -1,0 +1,17 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Cacheable shell for the sidebar's per-visitor "Compare Products" and
+ * "My Wish List" blocks: loads them from Controller\Sidebar\Index once the
+ * session is ready. Replaced by nothing when both are empty.
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+?>
+<div class="flex flex-col gap-8"
+     hx-get="<?= $escaper->escapeUrl($block->getUrl('zero/sidebar')) ?>"
+     hx-trigger="zero:session-ready from:body"
+     hx-swap="innerHTML"></div>

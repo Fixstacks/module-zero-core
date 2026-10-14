@@ -1,0 +1,50 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Component library example (see ViewModel\UiComponents).
+ *
+ * @var \Magento\Framework\Escaper $escaper
+ */
+?>
+<form class="grid sm:grid-cols-2 gap-4 max-w-2xl" novalidate>
+    <div class="field required">
+        <label class="label" for="ui-email"><?= $escaper->escapeHtml(__('Email')) ?></label>
+        <input type="email" id="ui-email" name="email" required autocomplete="email"
+               class="input input-bordered w-full">
+    </div>
+    <div class="field">
+        <label class="label" for="ui-country"><?= $escaper->escapeHtml(__('Country')) ?></label>
+        <select id="ui-country" name="country" class="select select-bordered w-full">
+            <option><?= $escaper->escapeHtml(__('United States')) ?></option>
+            <option><?= $escaper->escapeHtml(__('Canada')) ?></option>
+        </select>
+    </div>
+    <div class="field required sm:col-span-2">
+        <label class="label" for="ui-postcode"><?= $escaper->escapeHtml(__('ZIP Code')) ?></label>
+        <input type="text" id="ui-postcode" name="postcode" required value="ABC"
+               aria-invalid="true" aria-describedby="ui-postcode-error"
+               class="input input-bordered input-error w-full">
+        <p id="ui-postcode-error" class="text-error text-sm mt-1"><?= $escaper->escapeHtml(__('Enter a 5-digit ZIP code.')) ?></p>
+    </div>
+    <div class="field sm:col-span-2">
+        <label class="label" for="ui-comment"><?= $escaper->escapeHtml(__('Comment')) ?></label>
+        <textarea id="ui-comment" name="comment" rows="3" class="textarea textarea-bordered w-full"></textarea>
+    </div>
+    <label class="label cursor-pointer justify-start gap-2">
+        <input type="checkbox" name="newsletter" class="checkbox checkbox-sm">
+        <span class="label-text"><?= $escaper->escapeHtml(__('Sign Up for Newsletter')) ?></span>
+    </label>
+    <fieldset class="sm:col-span-2">
+        <legend class="label"><?= $escaper->escapeHtml(__('Shipping Method')) ?></legend>
+        <label class="label cursor-pointer justify-start gap-2">
+            <input type="radio" name="ui-shipping" class="radio radio-sm" checked>
+            <span class="label-text"><?= $escaper->escapeHtml(__('Flat Rate')) ?></span>
+        </label>
+        <label class="label cursor-pointer justify-start gap-2">
+            <input type="radio" name="ui-shipping" class="radio radio-sm">
+            <span class="label-text"><?= $escaper->escapeHtml(__('Free Shipping')) ?></span>
+        </label>
+    </fieldset>
+</form>

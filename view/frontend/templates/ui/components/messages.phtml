@@ -1,0 +1,16 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Component library example (see ViewModel\UiComponents).
+ *
+ * @var \Magento\Framework\Escaper $escaper
+ */
+?>
+<div class="flex flex-col gap-2 max-w-2xl">
+    <div class="message success"><div><?= $escaper->escapeHtml(__('You added Joust Duffle Bag to your shopping cart.')) ?></div></div>
+    <div class="message info"><div><?= $escaper->escapeHtml(__('You have placed no orders.')) ?></div></div>
+    <div class="message warning"><div><?= $escaper->escapeHtml(__('The requested qty is not available')) ?></div></div>
+    <div class="message error" role="alert"><div><?= $escaper->escapeHtml(__('Please select a shipping method.')) ?></div></div>
+</div>

@@ -1,0 +1,15 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Fragment for `zero/security/formkey`. No hx-* attributes: a self-refreshing
+ * root would refetch endlessly after an outerHTML swap, and a form key never
+ * needs refreshing on the same page.
+ *
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Zero\Core\ViewModel\FormKeyProvider $viewModel
+ */
+$viewModel = $block->getData('viewModel');
+?>
+<input name="form_key" type="hidden" value="<?= $escaper->escapeHtmlAttr($viewModel->getFormKey()) ?>" />

@@ -1,0 +1,26 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Fragment for `zero/customer/wishlistcounter`.
+ *
+ * The root must not trigger on `load`: hx-swap="outerHTML" inserts a new
+ * element on every response, and `load` fires for each inserted element, so it
+ * refetched endlessly. Only the page-rendered placeholder
+ * (Magento_Wishlist::link.phtml) loads it; this root listens for
+ * `wishlist:updated from:body`.
+ *
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Zero\Core\ViewModel\WishlistCounter $viewModel
+ */
+$viewModel = $block->getData('viewModel');
+$count = $viewModel->getItemCount();
+$isVisible = $viewModel->isEnabled() && $count > 0;
+?>
+<span class="counter qty"<?= $isVisible ? '' : ' hidden' ?>
+      hx-get="<?= $escaper->escapeUrl($block->getUrl('zero/customer/wishlistcounter')) ?>"
+      hx-trigger="wishlist:updated from:body"
+      hx-swap="outerHTML">
+    <?= $isVisible ? $escaper->escapeHtml($count === 1 ? __('%1 item', $count) : __('%1 items', $count)) : '' ?>
+</span>

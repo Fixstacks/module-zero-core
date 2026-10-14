@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+
+    Content > Design > UI Components: the Zero component library.
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Zero_Core::ui_components" title="UI Components" translate="title" module="Zero_Core" sortOrder="30"
+             parent="Magento_Backend::system_design" action="zero_core/ui/index"
+             resource="Zero_Core::ui_components"/>
+    </menu>
+</config>

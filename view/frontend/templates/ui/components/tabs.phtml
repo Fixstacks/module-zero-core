@@ -1,0 +1,18 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Component library example (see ViewModel\UiComponents).
+ *
+ * @var \Magento\Framework\Escaper $escaper
+ */
+?>
+<div class="tabs tabs-border max-w-2xl">
+    <input type="radio" name="ui-tabs" class="tab" aria-label="<?= $escaper->escapeHtmlAttr(__('Details')) ?>" checked>
+    <div class="tab-content py-4"><?= $escaper->escapeHtml(__('Soft, lightweight and quick-drying.')) ?></div>
+    <input type="radio" name="ui-tabs" class="tab" aria-label="<?= $escaper->escapeHtmlAttr(__('More Information')) ?>">
+    <div class="tab-content py-4"><?= $escaper->escapeHtml(__('Material: Cotton, Polyester')) ?></div>
+    <input type="radio" name="ui-tabs" class="tab" aria-label="<?= $escaper->escapeHtmlAttr(__('Reviews')) ?>">
+    <div class="tab-content py-4"><?= $escaper->escapeHtml(__('Be the first to review this product')) ?></div>
+</div>

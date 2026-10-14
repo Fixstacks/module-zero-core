@@ -1,0 +1,81 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Fragment for `zero/checkout/minicart`, loaded into the popover on click.
+ *
+ * Qty edits and remove post back to this same endpoint
+ * (Zero\Checkout\Controller\Cart\Update): the qty input sends `qty`, remove adds
+ * `remove=1` via hx-vals, and both hx-include #minicart-form-key (plain value;
+ * this fragment is never cached). `hx-sync="#minicart-content:replace"` drops
+ * stale responses when edits fire close together.
+ *
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Zero\Core\ViewModel\MiniCart $viewModel
+ */
+$viewModel = $block->getData('viewModel');
+$items = $viewModel->getItems();
+$updateUrl = $escaper->escapeUrl($block->getUrl('zero/cart/update'));
+?>
+<input type="hidden" id="minicart-form-key" name="form_key" value="<?= $escaper->escapeHtmlAttr($viewModel->getFormKey()) ?>" />
+<?php if (empty($items)) : ?>
+    <p class="minicart-empty text-sm text-base-content/60">
+        <?= $escaper->escapeHtml(__('You have no items in your shopping cart.')) ?>
+    </p>
+<?php else : ?>
+    <ul class="minicart-items flex flex-col gap-3 max-h-80 overflow-y-auto">
+        <?php foreach ($items as $item) : ?>
+            <?php $itemId = (int) $item->getItemId(); ?>
+            <li class="minicart-item flex items-start gap-3">
+                <?php $thumbnailUrl = $viewModel->getThumbnailUrl($item); ?>
+                <?php if ($thumbnailUrl) : ?>
+                    <img src="<?= $escaper->escapeUrl($thumbnailUrl) ?>"
+                         alt="<?= $escaper->escapeHtmlAttr($item->getName()) ?>"
+                         width="50" height="50" class="rounded-field border border-base-300 shrink-0" />
+                <?php endif; ?>
+                <span class="flex-1 min-w-0">
+                    <span class="minicart-item-name block text-sm font-medium truncate">
+                        <?= $escaper->escapeHtml($item->getName()) ?>
+                    </span>
+                    <span class="minicart-item-qty flex items-center gap-2 mt-1">
+                        <label class="sr-only" for="minicart-qty-<?= $itemId ?>">
+                            <?= $escaper->escapeHtml(__('Quantity')) ?>
+                        </label>
+                        <input type="number" id="minicart-qty-<?= $itemId ?>" name="qty" min="0" step="1"
+                               value="<?= $escaper->escapeHtmlAttr((string) ($item->getQty() * 1)) ?>"
+                               class="input input-bordered input-xs w-16"
+                               hx-post="<?= $updateUrl ?>"
+                               hx-trigger="change" hx-target="#minicart-content" hx-swap="innerHTML"
+                               hx-include="#minicart-form-key" hx-sync="#minicart-content:replace"
+                               hx-vals='{"item_id": "<?= $itemId ?>"}' />
+                        <button type="button"
+                                class="btn btn-ghost btn-xs text-error"
+                                aria-label="<?= $escaper->escapeHtmlAttr(__('Remove %1', $item->getName())) ?>"
+                                hx-post="<?= $updateUrl ?>"
+                                hx-trigger="click" hx-target="#minicart-content" hx-swap="innerHTML"
+                                hx-include="#minicart-form-key" hx-sync="#minicart-content:replace"
+                                hx-vals='{"item_id": "<?= $itemId ?>", "remove": "1"}'>
+                            <?= $escaper->escapeHtml(__('Remove')) ?>
+                        </button>
+                    </span>
+                </span>
+                <span class="minicart-item-price text-sm font-medium whitespace-nowrap">
+                    <?= $escaper->escapeHtml($viewModel->getFormattedItemPrice($item)) ?>
+                </span>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+    <div class="minicart-subtotal flex items-center justify-between mt-4 pt-3 border-t border-base-300 text-sm">
+        <span class="text-base-content/70"><?= $escaper->escapeHtml(__('Subtotal')) ?></span>
+        <strong class="font-display text-base"><?= $escaper->escapeHtml($viewModel->getFormattedSubtotal()) ?></strong>
+    </div>
+    <div class="minicart-actions flex flex-col gap-2 mt-3">
+        <a href="<?= $escaper->escapeUrl($viewModel->getCartUrl()) ?>" class="action viewcart btn btn-outline btn-sm">
+            <?= $escaper->escapeHtml(__('View and Edit Cart')) ?>
+        </a>
+        <a href="<?= $escaper->escapeUrl($viewModel->getCheckoutUrl()) ?>" class="action checkout primary btn btn-primary btn-sm">
+            <?= $escaper->escapeHtml(__('Proceed to Checkout')) ?>
+        </a>
+    </div>
+<?php endif; ?>

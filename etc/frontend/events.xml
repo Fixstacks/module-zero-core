@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+
+    Re-wires Magento_Reports' CatalogProductViewObserver to
+    catalog_controller_product_view: the class still exists but this Magento
+    version doesn't register it, so report_viewed_product_index stayed empty
+    and the "Recently Viewed Products" widget (etc/widget.xml) had no data.
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="catalog_controller_product_view">
+        <observer name="zero_reports_track_viewed_product" instance="Magento\Reports\Observer\CatalogProductViewObserver" />
+    </event>
+</config>

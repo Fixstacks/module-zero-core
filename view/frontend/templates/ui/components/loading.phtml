@@ -1,0 +1,20 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Component library example (see ViewModel\UiComponents).
+ *
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Magento\Framework\View\Element\Template $block
+ */
+?>
+<div class="flex items-center gap-3">
+    <button type="button" class="btn btn-outline"
+            hx-get="<?= $escaper->escapeUrl($block->getUrl('zero/theme/messages')) ?>"
+            hx-swap="none" hx-indicator="#ui-loading">
+        <?= $escaper->escapeHtml(__('Send a request')) ?>
+    </button>
+    <span id="ui-loading" class="htmx-indicator loading loading-spinner loading-sm" role="status"
+          aria-label="<?= $escaper->escapeHtmlAttr(__('Loading...')) ?>"></span>
+</div>

@@ -1,0 +1,42 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Fragment for `zero/theme/messages`. Markup mirrors the theme's
+ * Magento_Theme::messages.phtml shell; the cookie logic is in
+ * ViewModel\CookieMessages.
+ *
+ * No hx-trigger on the root: a `load` trigger on an outerHTML-swapped element
+ * refetches forever, and messages only appear after full page navigations.
+ *
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Zero\Core\ViewModel\CookieMessages $cookieMessagesViewModel
+ */
+$viewModel = $block->getData('cookieMessagesViewModel');
+$messages = $viewModel ? $viewModel->getMessages() : [];
+?>
+<?php if (!empty($messages)): ?>
+    <div aria-atomic="true" role="alert" class="messages flex flex-col gap-2 mb-4">
+        <?php foreach ($messages as $message): ?>
+            <?php
+            $type = (string) ($message['type'] ?? 'notice');
+            $alertClass = match ($type) {
+                'error' => 'alert-error',
+                'success' => 'alert-success',
+                'warning' => 'alert-warning',
+                default => 'alert-info',
+            };
+    ?>
+            <div class="message-<?= $escaper->escapeHtmlAttr($type) ?> <?= $escaper->escapeHtmlAttr($type) ?> message alert <?= $escaper->escapeHtmlAttr($alertClass) ?> text-sm py-2"
+                 data-ui-id="message-<?= $escaper->escapeHtmlAttr($type) ?>">
+                <?php /*
+                        The text comes from a cookie, which is client-controllable (e.g. set from a
+                        sibling subdomain), so it is escaped with the same tag allow-list as stock's
+                        Knockout renderer (prepareMessageForHtml); message links keep working.
+                */ ?>
+                <div><?= $escaper->escapeHtml((string) ($message['text'] ?? ''), ['div', 'span', 'b', 'strong', 'i', 'em', 'u', 'a']) ?></div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>

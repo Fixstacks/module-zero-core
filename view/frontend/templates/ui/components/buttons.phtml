@@ -1,0 +1,19 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Component library example (see ViewModel\UiComponents).
+ *
+ * @var \Magento\Framework\Escaper $escaper
+ */
+?>
+<div class="flex flex-wrap items-center gap-3">
+    <button type="button" class="btn btn-primary"><?= $escaper->escapeHtml(__('Add to Cart')) ?></button>
+    <button type="button" class="btn btn-neutral"><?= $escaper->escapeHtml(__('Continue')) ?></button>
+    <button type="button" class="btn btn-outline"><?= $escaper->escapeHtml(__('Apply')) ?></button>
+    <button type="button" class="btn btn-ghost"><?= $escaper->escapeHtml(__('Back')) ?></button>
+    <button type="button" class="btn btn-primary" disabled><?= $escaper->escapeHtml(__('Out of stock')) ?></button>
+    <a href="#" class="link"><?= $escaper->escapeHtml(__('View all products')) ?></a>
+    <button type="button" class="btn btn-circle btn-sm" aria-label="<?= $escaper->escapeHtmlAttr(__('Next slide')) ?>">&rsaquo;</button>
+</div>

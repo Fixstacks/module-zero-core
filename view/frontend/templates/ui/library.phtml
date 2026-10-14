@@ -1,0 +1,56 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * /zero/ui/: the Zero component library. Each component is rendered live
+ * from its template and shown as code to copy (the same file). Copy buttons
+ * use web/js/ui-library.js.
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Zero\Core\ViewModel\UiComponents $viewModel
+ */
+$viewModel = $block->getData('viewModel');
+$components = $viewModel->getComponents();
+?>
+<div class="zero-ui-library grid lg:grid-cols-[12rem_minmax(0,1fr)] gap-10">
+    <nav aria-label="<?= $escaper->escapeHtmlAttr(__('Components')) ?>" class="lg:sticky lg:top-4 self-start">
+        <ul class="flex flex-wrap lg:flex-col gap-x-4 gap-y-2 text-sm">
+            <?php foreach ($components as $id => $component): ?>
+                <li><a class="link link-hover" href="#component-<?= $escaper->escapeHtmlAttr($id) ?>"><?= $escaper->escapeHtml(__($component['title'])) ?></a></li>
+            <?php endforeach; ?>
+        </ul>
+    </nav>
+    <div class="flex flex-col gap-14 min-w-0">
+        <p class="max-w-2xl">
+            <?= $escaper->escapeHtml(__('Zero\'s building blocks: Tailwind and DaisyUI classes, native HTML elements, and a few data attributes wired by web/js/zero.js. No inline scripts, so everything here runs under the strict Content Security Policy. Copy the code into a template; the texts go through __() for translation.')) ?>
+        </p>
+        <?php foreach ($components as $id => $component): ?>
+            <?php
+            $template = $component['template'];
+            $codeId = 'component-code-' . $id;
+            ?>
+            <section id="component-<?= $escaper->escapeHtmlAttr($id) ?>" class="scroll-mt-4" aria-labelledby="component-<?= $escaper->escapeHtmlAttr($id) ?>-title">
+                <h2 id="component-<?= $escaper->escapeHtmlAttr($id) ?>-title" class="text-2xl font-medium mb-2"><?= $escaper->escapeHtml(__($component['title'])) ?></h2>
+                <p class="text-sm max-w-2xl mb-4"><?= $escaper->escapeHtml(__($component['description'])) ?></p>
+                <div class="rounded-box border border-base-300 bg-base-100 p-6 mb-3">
+                    <?= $block->getLayout()
+                        ->createBlock(\Magento\Framework\View\Element\Template::class)
+                        ->setTemplate($template)
+                        ->toHtml() ?>
+                </div>
+                <div class="relative">
+                    <button type="button" class="btn btn-xs absolute top-2 end-2" data-copy="#<?= $escaper->escapeHtmlAttr($codeId) ?>"
+                            data-copied-label="<?= $escaper->escapeHtmlAttr(__('Copied')) ?>">
+                        <?= $escaper->escapeHtml(__('Copy')) ?>
+                    </button>
+                    <pre class="rounded-box bg-neutral text-neutral-content text-xs p-4 overflow-x-auto"><code id="<?= $escaper->escapeHtmlAttr($codeId) ?>"><?= $escaper->escapeHtml($viewModel->getSource($block->getTemplateFile($template))) ?></code></pre>
+                </div>
+                <p class="text-xs mt-1"><?= $escaper->escapeHtml($template) ?></p>
+            </section>
+        <?php endforeach; ?>
+    </div>
+    <p class="sr-only" role="status" data-copy-status></p>
+</div>
+<script src="<?= $escaper->escapeUrl($block->getViewFileUrl('Zero_Core::js/ui-library.js')) ?>" defer></script>

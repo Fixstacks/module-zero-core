@@ -1,0 +1,65 @@
+{
+    "name": "vilmate/module-zero-core",
+    "description": "Zero for Magento Open Source: storefront core for the Zero theme (HTMX fragments, view models, private content without Knockout).",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": [
+        "OSL-3.0",
+        "AFL-3.0"
+    ],
+    "authors": [
+        {
+            "name": "Roman Pasichnyk"
+        }
+    ],
+    "homepage": "https://zero.fixstacks.com",
+    "keywords": [
+        "magento",
+        "magento2",
+        "magento-open-source",
+        "zero",
+        "htmx",
+        "headless",
+        "storefront"
+    ],
+    "require": {
+        "php": "~8.2.0||~8.3.0||~8.4.0",
+        "magento/framework": "103.0.*",
+        "magento/module-backend": "*",
+        "magento/module-captcha": "*",
+        "magento/module-catalog": "*",
+        "magento/module-catalog-rule": "*",
+        "magento/module-catalog-search": "*",
+        "magento/module-catalog-url-rewrite": "*",
+        "magento/module-checkout": "*",
+        "magento/module-checkout-agreements": "*",
+        "magento/module-cms": "*",
+        "magento/module-cms-url-rewrite": "*",
+        "magento/module-config": "*",
+        "magento/module-configurable-product": "*",
+        "magento/module-cookie": "*",
+        "magento/module-customer": "*",
+        "magento/module-directory": "*",
+        "magento/module-offline-payments": "*",
+        "magento/module-page-cache": "*",
+        "magento/module-quote": "*",
+        "magento/module-reports": "*",
+        "magento/module-require-js": "*",
+        "magento/module-review": "*",
+        "magento/module-sales": "*",
+        "magento/module-search": "*",
+        "magento/module-store": "*",
+        "magento/module-theme": "*",
+        "magento/module-url-rewrite": "*",
+        "magento/module-widget": "*",
+        "magento/module-wishlist": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Zero\\Core\\": ""
+        }
+    }
+}

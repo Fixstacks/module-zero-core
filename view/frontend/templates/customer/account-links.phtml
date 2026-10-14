@@ -1,0 +1,52 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Fragment for `zero/customer/accountlinks`: renders the "top.links"
+ * Navigation block (declared self-contained in zero_customer_accountlinks.xml)
+ * with the stock link classes, so Sign In/Sign Out etc. stay stock logic.
+ *
+ * No hx-trigger on the root: a `load` trigger on an outerHTML-swapped element
+ * refetches forever, and login/logout are full page navigations anyway.
+ *
+ * This fragment REPLACES the cacheable shell's <ul> in
+ * Magento_Customer::account/toplinks.phtml, so the dropdown's positioning
+ * classes must be kept in sync in BOTH files — only this copy is ever visible.
+ *
+ * @var \Magento\Customer\Block\Account\Navigation $block
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Zero\Core\ViewModel\CustomerLoginState $customerLoginStateViewModel
+ */
+$customerLoginStateViewModel = $block->getData('customerLoginStateViewModel');
+$isLoggedIn = $customerLoginStateViewModel && $customerLoginStateViewModel->isLoggedIn();
+
+$links = array_filter($block->getLinks(), static function ($link) use ($isLoggedIn): bool {
+    $name = $link->getNameInLayout();
+    if ($name === 'header') {
+        return false;
+    }
+    if ($name === 'my-account-link' && !$isLoggedIn) {
+        return false;
+    }
+    return true;
+});
+
+$linkOrder = [
+    'my-account-link' => 0,
+    'authorization-link' => 0,
+    'register-link' => 1,
+    'wish-list-link' => 2,
+    'catalog.compare.link' => 3,
+];
+usort($links, static function ($linkA, $linkB) use ($linkOrder): int {
+    $rankA = $linkOrder[$linkA->getNameInLayout()] ?? count($linkOrder);
+    $rankB = $linkOrder[$linkB->getNameInLayout()] ?? count($linkOrder);
+    return $rankA <=> $rankB;
+});
+?>
+<ul class="header links menu absolute end-0 top-full z-30 mt-1 w-52 rounded-box border border-base-300 bg-base-100 p-2 shadow-lg">
+    <?php foreach ($links as $link): ?>
+        <?= /* @noEscape */ $block->renderLink($link) ?>
+    <?php endforeach; ?>
+</ul>

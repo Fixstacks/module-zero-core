@@ -1,0 +1,19 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Link preview tags (Block\SocialTags). escapeHtml, not escapeHtmlAttr, for
+ * the values: the latter writes "og:title" as "og&#x3A;title", which some
+ * preview parsers don't decode.
+ *
+ * @var \Zero\Core\Block\SocialTags $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+?>
+<?php foreach ($block->openGraph() as $property => $content): ?>
+<meta property="<?= $escaper->escapeHtml($property) ?>" content="<?= $escaper->escapeHtml($content) ?>">
+<?php endforeach; ?>
+<?php foreach ($block->twitter() as $name => $content): ?>
+<meta name="<?= $escaper->escapeHtml($name) ?>" content="<?= $escaper->escapeHtml($content) ?>">
+<?php endforeach; ?>

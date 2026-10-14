@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+
+    /zero/ui/: the component library (Controller\Ui\Index).
+-->
+<page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content">
+            <!-- cacheable="false": opened through signed links, so never a shared cached page. -->
+            <block class="Magento\Framework\View\Element\Template" name="zero.ui.components"
+                   template="Zero_Core::ui/library.phtml" cacheable="false">
+                <arguments>
+                    <argument name="viewModel" xsi:type="object">Zero\Core\ViewModel\UiComponents</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

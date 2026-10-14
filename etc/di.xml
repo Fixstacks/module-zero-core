@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!--
+        Compat modules: templates of Vendor_Module come from its registered
+        compat module on Zero themes (see Model\Compat\Registry). Global, not
+        frontend-only: emails sent from the admin render a store's theme too.
+    -->
+    <type name="Magento\Framework\View\Element\Template\File\Resolver">
+        <plugin name="zero_core_use_compat_templates" type="Zero\Core\Plugin\View\Element\Template\File\UseCompatTemplates"/>
+    </type>
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="zero_compat_report" xsi:type="object">Zero\Core\Console\Command\CompatReportCommand</item>
+                <item name="zero_compat_create" xsi:type="object">Zero\Core\Console\Command\CompatCreateCommand</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

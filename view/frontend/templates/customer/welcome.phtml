@@ -1,0 +1,15 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Fragment for `zero/customer/welcome`. No hx-trigger on the root: `load` would
+ * refetch endlessly after an outerHTML swap (see customer/wishlist-counter.phtml),
+ * and the greeting only changes on login/logout, which are full page loads.
+ *
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Zero\Core\ViewModel\CustomerWelcome $viewModel
+ */
+$viewModel = $block->getData('viewModel');
+?>
+<span class="welcome-text"><?= $escaper->escapeHtml($viewModel->getMessage()) ?></span>

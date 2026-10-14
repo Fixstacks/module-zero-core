@@ -1,0 +1,24 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Fragment for `zero/checkout/cartcounter`. No `load` trigger on the root (see
+ * customer/wishlist-counter.phtml). `hx-target="this"` is explicit because
+ * the swapped-in element sits inside minicart.phtml's button, whose
+ * hx-target would otherwise be inherited.
+ *
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Zero\Core\ViewModel\MiniCart $viewModel
+ */
+$viewModel = $block->getData('viewModel');
+$count = $viewModel->getItemCount();
+?>
+<span class="counter qty badge badge-primary badge-sm"<?= $count > 0 ? '' : ' hidden' ?>
+      aria-label="<?= $escaper->escapeHtmlAttr($count === 1 ? __('%1 item in cart', $count) : __('%1 items in cart', $count)) ?>"
+      hx-get="<?= $escaper->escapeUrl($block->getUrl('zero/checkout/cartcounter')) ?>"
+      hx-trigger="cart:updated from:body"
+      hx-target="this"
+      hx-swap="outerHTML">
+    <?= $count > 0 ? $escaper->escapeHtml((string) $count) : '' ?>
+</span>

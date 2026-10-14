@@ -1,0 +1,60 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Header search suggestions dropdown, swapped into #search_autocomplete as
+ * the visitor types (Magento_Search::form.mini.phtml).
+ *
+ * Renders nothing at all below the min query length: the dropdown is revealed
+ * by `:not(:empty)` in CSS, so even an empty <ul> would show a blank box.
+ * Otherwise "View all results" is always shown, plus matching products even
+ * when the term-suggestion log has nothing.
+ *
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Zero\Core\ViewModel\SearchSuggest $viewModel
+ */
+$viewModel = $block->getData('viewModel');
+$query = $viewModel->getQueryText();
+$suggestions = $query !== '' ? $viewModel->getSuggestions() : [];
+$products = $query !== '' ? $viewModel->getMatchingProducts() : [];
+$showAllResultsLink = $query !== '' && ($suggestions || $products || !$viewModel->isQueryTooShort());
+?>
+<?php if ($showAllResultsLink): ?>
+    <ul class="menu menu-sm w-full rounded-box border border-base-300 bg-base-100 p-2 shadow-lg"
+        aria-label="<?= $escaper->escapeHtmlAttr(__('Search suggestions')) ?>">
+        <?php foreach ($products as $product): ?>
+            <li>
+                <a href="<?= $escaper->escapeUrl($product['url']) ?>" class="flex items-center gap-3">
+                    <img src="<?= $escaper->escapeUrl($product['image']) ?>"
+                         alt=""
+                         loading="lazy"
+                         class="size-10 shrink-0 rounded-field object-cover bg-base-200"/>
+                    <span class="flex-1 min-w-0 truncate"><?= $escaper->escapeHtml($product['name']) ?></span>
+                    <span class="text-base-content/60 text-xs shrink-0">
+                        <?= /* @noEscape */ $product['price'] ?>
+                    </span>
+                </a>
+            </li>
+        <?php endforeach; ?>
+        <?php foreach ($suggestions as $i => $suggestion): ?>
+            <li<?= $products && $i === array_key_first($suggestions) ? ' class="mt-1 border-t border-base-300 pt-1"' : '' ?>>
+                <a href="<?= $escaper->escapeUrl($suggestion['url']) ?>"
+                   class="flex items-center justify-between gap-3">
+                    <span><?= $escaper->escapeHtml($suggestion['title']) ?></span>
+                    <?php if ($suggestion['numResults'] > 0): ?>
+                        <span class="text-base-content/60 text-xs shrink-0">
+                            <?= $escaper->escapeHtml($suggestion['numResults']) ?>
+                        </span>
+                    <?php endif; ?>
+                </a>
+            </li>
+        <?php endforeach; ?>
+        <li class="mt-1 border-t border-base-300 pt-1">
+            <a href="<?= $escaper->escapeUrl($viewModel->getAllResultsUrl()) ?>" class="font-medium">
+                <?= $escaper->escapeHtml(__('View all results for "%1"', $query)) ?>
+            </a>
+        </li>
+    </ul>
+<?php endif; ?>

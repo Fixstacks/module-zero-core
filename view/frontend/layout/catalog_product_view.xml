@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+
+    Magento's own product Open Graph tags give way to Zero's (zero.social.tags
+    in default.xml): the same tags plus a description fallback, the site
+    name, availability and the Twitter card.
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="opengraph.general" remove="true"/>
+    </body>
+</page>
