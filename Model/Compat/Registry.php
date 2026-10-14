@@ -9,9 +9,8 @@ declare(strict_types=1);
 namespace Zero\Core\Model\Compat;
 
 /**
- * Which compat modules adapt which modules to the Zero theme.
- *
- * A compat module registers itself in its etc/di.xml:
+ * Which compat modules adapt which modules to the Zero theme. Registered in
+ * the compat module's di.xml:
  *
  *     <type name="Zero\Core\Model\Compat\Registry">
  *         <arguments>
@@ -23,11 +22,7 @@ namespace Zero\Core\Model\Compat;
  *         </arguments>
  *     </type>
  *
- * On a Zero theme (Zero/default or a theme inheriting from it), a template
- * "Vendor_Module::path.phtml" then renders Vendor_ZeroCompat's
- * templates/path.phtml when that file exists, unless the theme itself
- * overrides the template. Disabled modules never get here: their di.xml is
- * not read.
+ * See Plugin\...\UseCompatTemplates for the template order.
  */
 class Registry
 {

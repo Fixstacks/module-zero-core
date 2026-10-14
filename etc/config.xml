@@ -34,9 +34,15 @@
             </policies>
         </csp>
         <zero_theme>
+            <homepage>
+                <promo>0</promo>
+            </homepage>
             <social>
                 <enabled>1</enabled>
             </social>
+            <performance>
+                <product_card_cache>1</product_card_cache>
+            </performance>
             <ui>
                 <enabled>0</enabled>
             </ui>

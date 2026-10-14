@@ -3,13 +3,9 @@
  * Copyright © 2026 Roman Pasichnyk
  * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
  *
- * Fragment for `zero/checkout/regions`: a region <select> for the requested
- * country_id, or a free-text input when the country has no region list.
- * Shared by checkout and the customer address/registration forms.
- *
- * Optional `prefix` param (checkout billing address): gives the second
- * country→region pair its own id/name, so a page never has two `region_id`
- * fields. Without it the output is the original `region_id`/`region-field`.
+ * zero/checkout/regions: a region <select> for country_id, or a text input
+ * when it has no list; for checkout and the customer forms. `prefix` (billing)
+ * gives the second pair its own id/name, so there are never two region_id.
  *
  * @var \Magento\Framework\Escaper $escaper
  * @var \Zero\Core\ViewModel\Directory\CountryRegionProvider $viewModel

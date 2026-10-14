@@ -22,18 +22,11 @@ use Zero\Core\Model\Compat\Registry;
 use Zero\Core\Model\Theme\FallbackRoutes;
 
 /**
- * Which enabled modules with a storefront are ready for the Zero theme:
- *
- * - "Zero styles": the module supports Zero itself (view/frontend/zero/tailwind.css);
- * - "compat: X": a compat module adapts it (Model\Compat\Registry);
- * - "theme": a Zero theme overrides its templates (<theme>/Vendor_Module/);
- * - "Luma pages": its front name is listed under Pages on Another Theme;
- * - otherwise not covered, and "Luma JS" counts its files that rely on
- *   Luma's RequireJS/Knockout stack (x-magento-init, data-mage-init, UI
- *   components), which do nothing on Zero pages.
- *
- * Magento's own modules are left out unless --all is given: the Zero theme
- * covers the ones a storefront uses.
+ * Which enabled storefront modules are ready for the Zero theme: "Zero
+ * styles" (own tailwind.css), "compat: X", "theme" (a Zero theme overrides
+ * its templates), "Luma pages", or not covered, with a count of its Luma-only
+ * JS (x-magento-init, data-mage-init, UI components). Magento's own modules
+ * only with --all.
  */
 class CompatReportCommand extends Command
 {

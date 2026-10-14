@@ -3,12 +3,8 @@
  * Copyright © 2026 Roman Pasichnyk
  * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
  *
- * Fragment for `zero/theme/messages`. Markup mirrors the theme's
- * Magento_Theme::messages.phtml shell; the cookie logic is in
- * ViewModel\CookieMessages.
- *
- * No hx-trigger on the root: a `load` trigger on an outerHTML-swapped element
- * refetches forever, and messages only appear after full page navigations.
+ * zero/theme/messages, mirroring the Magento_Theme::messages.phtml shell.
+ * No `load` trigger on the root (an outerHTML swap would refetch forever).
  *
  * @var \Magento\Framework\Escaper $escaper
  * @var \Zero\Core\ViewModel\CookieMessages $cookieMessagesViewModel

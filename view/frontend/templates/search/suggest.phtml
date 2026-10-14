@@ -3,13 +3,9 @@
  * Copyright © 2026 Roman Pasichnyk
  * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
  *
- * Header search suggestions dropdown, swapped into #search_autocomplete as
- * the visitor types (Magento_Search::form.mini.phtml).
- *
- * Renders nothing at all below the min query length: the dropdown is revealed
- * by `:not(:empty)` in CSS, so even an empty <ul> would show a blank box.
- * Otherwise "View all results" is always shown, plus matching products even
- * when the term-suggestion log has nothing.
+ * Header search dropdown (#search_autocomplete). Nothing at all below the
+ * min query length: CSS shows it on `:not(:empty)`, so an empty <ul> would
+ * be a blank box.
  *
  * @var \Magento\Framework\Escaper $escaper
  * @var \Magento\Framework\View\Element\Template $block

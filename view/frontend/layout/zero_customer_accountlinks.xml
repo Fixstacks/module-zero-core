@@ -2,17 +2,10 @@
 <layout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/layout_generic.xsd">
     <!--
-        Self-contained "top.links" with its child link blocks for this fragment
-        handle. `<update handle="default"/>` doesn't work here: a bare Result\Layout
-        has no page_layout container chain, so top.links is never scheduled.
-
-        Blocks/arguments are copied from the modules that build "top.links" sitewide,
-        plus the same customerLoginStateViewModel the theme adds. The "header" welcome
-        block is intentionally omitted (the template excludes it anyway).
-
-        class="link" on Account\Link and RegisterLink: they render a classless
-        <li>, while the other links' templates add `link` (DaisyUI's underline
-        class); this keeps all items consistent.
+        Self-contained "top.links" for this fragment handle: a bare
+        Result\Layout has no page_layout chain, so `<update handle="default"/>`
+        never schedules it. Blocks are copied from the modules that build it.
+        class="link" on Account\Link and RegisterLink matches the other links.
     -->
     <body>
         <block class="Magento\Customer\Block\Account\Navigation" name="top.links" cacheable="false"

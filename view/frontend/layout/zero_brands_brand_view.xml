@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+
+    Product list cards from the block cache (ViewModel\ProductCardCache; the
+    Zero theme's product/list.phtml reads the card_cache argument).
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="category.products.list">
+            <arguments>
+                <argument name="card_cache" xsi:type="object">Zero\Core\ViewModel\ProductCardCache</argument>
+            </arguments>
+        </referenceBlock>
+    </body>
+</page>

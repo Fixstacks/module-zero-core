@@ -64,4 +64,8 @@
             </argument>
         </arguments>
     </type>
+    <!-- Whole amounts for the currencies modules list (Plugin\Directory\WholeAmounts): "4 800 ₴", not "4 800,00 ₴". -->
+    <type name="Magento\Directory\Model\Currency">
+        <plugin name="zero_whole_amounts" type="Zero\Core\Plugin\Directory\WholeAmounts"/>
+    </type>
 </config>

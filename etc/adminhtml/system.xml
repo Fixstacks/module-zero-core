@@ -26,6 +26,54 @@
                     <source_model>Zero\Core\Model\Config\Source\FrontendThemes</source_model>
                 </field>
             </group>
+            <group id="homepage" translate="label comment" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Homepage</label>
+                <comment>The Zero homepage's sections. Left empty, each works from the catalog on its own.</comment>
+                <field id="departments" translate="label comment" type="multiselect" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Departments</label>
+                    <comment>Up to four top-level categories for the department picker and "The shortlist" (one product from each). None chosen: the store root's first four active categories.</comment>
+                    <source_model>Zero\Core\Model\Config\Source\TopCategories</source_model>
+                    <can_be_empty>1</can_be_empty>
+                </field>
+                <field id="new_arrivals_exclude" translate="label comment" type="multiselect" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Keep Out of New Arrivals</label>
+                    <comment>Products in these categories don't show in the newest-products slider.</comment>
+                    <source_model>Zero\Core\Model\Config\Source\TopCategories</source_model>
+                    <can_be_empty>1</can_be_empty>
+                </field>
+                <field id="new_arrivals_link" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>New Arrivals "View All" Link</label>
+                    <comment>The category the link opens. Empty: no link.</comment>
+                    <source_model>Zero\Core\Model\Config\Source\TopCategoriesOptional</source_model>
+                </field>
+                <field id="promo" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Show Zero's Promotional Sections</label>
+                    <comment>The sections about the Zero storefront itself ("Commerce, without the drag", pillars, stats, field note), for a demo store. Keep No on a live store.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="promo_image_spread" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Promotional Spread Image</label>
+                    <comment>A product image path under pub/media/catalog/product, e.g. /w/t/wt06-blue_main_1.jpg. Empty: a featured product's image.</comment>
+                    <depends>
+                        <field id="promo">1</field>
+                    </depends>
+                </field>
+                <field id="promo_image_quote" translate="label comment" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Field Note Image</label>
+                    <comment>As above, for the field note section.</comment>
+                    <depends>
+                        <field id="promo">1</field>
+                    </depends>
+                </field>
+            </group>
+            <group id="performance" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Performance</label>
+                <field id="product_card_cache" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Cache Product Cards</label>
+                    <comment>Each product card of a category, search or brand page is kept in the Blocks HTML cache for up to an hour (cleaned when the product changes), so pages the page cache doesn't hold yet render faster. No turns it off.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
             <group id="ui" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Component Library</label>
                 <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">

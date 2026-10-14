@@ -3,16 +3,10 @@
  * Copyright © 2026 Roman Pasichnyk
  * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
  *
- * Fragment for `zero/customer/accountlinks`: renders the "top.links"
- * Navigation block (declared self-contained in zero_customer_accountlinks.xml)
- * with the stock link classes, so Sign In/Sign Out etc. stay stock logic.
- *
- * No hx-trigger on the root: a `load` trigger on an outerHTML-swapped element
- * refetches forever, and login/logout are full page navigations anyway.
- *
- * This fragment REPLACES the cacheable shell's <ul> in
- * Magento_Customer::account/toplinks.phtml, so the dropdown's positioning
- * classes must be kept in sync in BOTH files — only this copy is ever visible.
+ * zero/customer/accountlinks: the "top.links" block with stock's link logic.
+ * No `load` trigger on the root (an outerHTML swap would refetch forever).
+ * It REPLACES the shell's <ul> in Magento_Customer::account/toplinks.phtml:
+ * keep the dropdown's positioning classes in sync in both.
  *
  * @var \Magento\Customer\Block\Account\Navigation $block
  * @var \Magento\Framework\Escaper $escaper

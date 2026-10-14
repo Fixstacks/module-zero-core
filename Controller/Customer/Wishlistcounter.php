@@ -13,14 +13,9 @@ use Magento\Framework\View\Result\Layout;
 use Magento\Framework\View\Result\LayoutFactory;
 
 /**
- * The personalized wishlist counter as an HTML fragment (replacing Knockout's
- * `wishlist().counter`). The cacheable page ships a placeholder that hx-gets this
- * (Magento_Wishlist::link.phtml).
- *
- * Renders the zero_customer_wishlistcounter handle (just the one block, no
- * `default` handle). addOutputElement() is required: layout XML's
- * `output="1"` isn't wired to it in this Magento version, so the response
- * would be empty.
+ * The wish list counter as an HTML fragment (Magento_Wishlist::link.phtml
+ * hx-gets it). addOutputElement() is needed: layout `output="1"` isn't wired
+ * to it in this Magento version.
  */
 class Wishlistcounter implements PrivateFragmentActionInterface
 {

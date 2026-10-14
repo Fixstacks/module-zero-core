@@ -3,18 +3,10 @@
  * Copyright © 2026 Roman Pasichnyk
  * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
  *
- * Homepage content (below the hero, a Zero Banner widget): department picker → dark/light
- * "system" spread → feature pillars → product grids → stats band → editorial
- * quote. Data comes from the CategoryShowcase and FeaturedProducts view models.
- *
- * - Stats band claims only what the project can back (0% legacy JS, semantic
- *   HTML, SSR-first), no unmeasured performance numbers.
- * - Small muted labels use text-base-content/60 (≥4.5:1 on base-100);
- *   text-secondary only on large display text, where 3:1 is enough.
- * - Editorial images use FeaturedProducts' resized srcset.
- * - "New, in orbit" is a scroll-snap row like the hero carousel. It shows several
- *   cards at once, so there is no single "current" card for anchor links; the
- *   prev/next buttons use a small scrollBy() script, while swiping stays native.
+ * Homepage below the hero: departments, promotional sections (when on),
+ * product grids. Small muted labels use text-base-content/60 (≥4.5:1).
+ * "New, in orbit" is a scroll-snap row; it shows several cards, so prev/next
+ * use a small scrollBy() script while swiping stays native.
  *
  * @var \Magento\Framework\Escaper $escaper
  * @var \Magento\Framework\View\Element\Template $block
@@ -27,6 +19,10 @@ $categories = $categoryShowcaseViewModel->getCategories();
 $featuredProductsViewModel = $block->getData('featuredProductsViewModel');
 $shortlist = $featuredProductsViewModel->getShortlist();
 $newArrivals = $featuredProductsViewModel->getNewArrivals();
+// Zero's own promotional sections show only when switched on (Stores > Configuration > Zero > Homepage).
+$promo = $featuredProductsViewModel->showPromo();
+$primaryUrl = $promo ? $featuredProductsViewModel->getPrimaryDepartmentUrl() : '';
+$newArrivalsUrl = $featuredProductsViewModel->getNewArrivalsUrl();
 
 $shirtIcon = '<path d="M15.6 2.2 20 3.8a1.5 1.5 0 0 1 1 1.7l-.6 3.2a1 1 0 0 1-1 .8H17v10a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V9.5H4.6a1 1 0 0 1-1-.8L3 5.5a1.5 1.5 0 0 1 1-1.7l4.4-1.6a3 3 0 0 0 6 0z"/>';
 $categoryIcons = [
@@ -100,6 +96,7 @@ $renderProductTile = static function (array $tile) use ($escaper): void {
         </section>
     <?php endif; ?>
 
+    <?php if ($promo): ?>
     <section class="zero-system py-14 sm:py-20">
         <div class="max-w-6xl mx-auto px-4 sm:px-8">
             <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 sm:gap-4 mb-6 sm:mb-8 text-2xs sm:text-xs font-semibold uppercase tracking-widest">
@@ -126,20 +123,22 @@ $renderProductTile = static function (array $tile) use ($escaper): void {
                                 'A considered Magento 2 storefront for considered things. Fewer layers, better choices, more room to breathe.'
                             )) ?>
                         </p>
-                        <a href="<?= $escaper->escapeUrl($block->getUrl('women.html')) ?>"
+                        <a href="<?= $escaper->escapeUrl($primaryUrl) ?>"
                            class="shrink-0 text-xs sm:text-sm font-semibold uppercase tracking-widest text-primary border-b border-primary pb-0.5 whitespace-nowrap">
                             <?= $escaper->escapeHtml(__('Explore the Edit')) ?> <?= /* @noEscape */ $arrow ?>
                         </a>
                     </div>
                 </div>
-                <a href="<?= $escaper->escapeUrl($block->getUrl('women/training-women.html')) ?>"
+                <a href="<?= $escaper->escapeUrl($primaryUrl) ?>"
                    class="relative min-h-[22rem] block group overflow-hidden">
-                    <img src="<?= $escaper->escapeUrl($featuredProductsViewModel->getSystemSpreadImageUrl()) ?>"
+                    <?php if ($spreadUrl = $featuredProductsViewModel->getSystemSpreadImageUrl()): ?>
+                    <img src="<?= $escaper->escapeUrl($spreadUrl) ?>"
                          srcset="<?= $escaper->escapeHtmlAttr($featuredProductsViewModel->getSystemSpreadImageSrcset()) ?>"
                          sizes="<?= $escaper->escapeHtmlAttr($featuredProductsViewModel->getImageSizes()) ?>"
                          alt="<?= $escaper->escapeHtmlAttr(__('Made to move.')) ?>"
                          class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                          loading="lazy" />
+                    <?php endif; ?>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent"></div>
                     <span class="absolute top-4 start-4 inline-flex items-center gap-1.5 bg-base-100/90 text-base-content text-2xs font-semibold uppercase tracking-wider px-2.5 py-1">
                         <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
@@ -178,6 +177,7 @@ $renderProductTile = static function (array $tile) use ($escaper): void {
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
     <?php if ($shortlist): ?>
         <section class="product-grid py-14 sm:py-20">
@@ -215,10 +215,12 @@ $renderProductTile = static function (array $tile) use ($escaper): void {
                         </h2>
                     </div>
                     <div class="flex items-center justify-between sm:justify-start gap-4 sm:gap-6 sm:shrink-0">
-                        <a href="<?= $escaper->escapeUrl($block->getUrl('whats-new.html')) ?>"
+                        <?php if ($newArrivalsUrl): ?>
+                        <a href="<?= $escaper->escapeUrl($newArrivalsUrl) ?>"
                            class="text-xs sm:text-sm font-semibold uppercase tracking-widest text-base-content hover:text-primary border-b border-base-content/40 hover:border-primary pb-0.5 whitespace-nowrap">
                             <?= $escaper->escapeHtml(__('View all products')) ?> <?= /* @noEscape */ $arrow ?>
                         </a>
+                        <?php endif; ?>
                         <?php /* Swiping is native scroll-snap; these buttons add a mouse/keyboard affordance (web/js/zero.js). */ ?>
                         <div class="flex items-center gap-2">
                             <button type="button" id="new-arrivals-prev" class="btn btn-circle btn-sm" data-scroller-prev="#new-arrivals-track"
@@ -239,6 +241,7 @@ $renderProductTile = static function (array $tile) use ($escaper): void {
         </section>
     <?php endif; ?>
 
+    <?php if ($promo): ?>
     <section class="zero-stats py-14 sm:py-20 bg-neutral text-neutral-content">
         <div class="max-w-6xl mx-auto px-4 sm:px-8">
             <span class="block text-2xs sm:text-xs font-semibold uppercase tracking-widest text-primary mb-4">
@@ -292,12 +295,14 @@ $renderProductTile = static function (array $tile) use ($escaper): void {
     <section class="editorial-quote py-14 sm:py-20">
         <div class="max-w-6xl mx-auto px-4 sm:px-8 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
             <div class="relative aspect-[4/3] overflow-hidden bg-base-200">
-                <img src="<?= $escaper->escapeUrl($featuredProductsViewModel->getEditorialQuoteImageUrl()) ?>"
+                <?php if ($quoteUrl = $featuredProductsViewModel->getEditorialQuoteImageUrl()): ?>
+                <img src="<?= $escaper->escapeUrl($quoteUrl) ?>"
                      srcset="<?= $escaper->escapeHtmlAttr($featuredProductsViewModel->getEditorialQuoteImageSrcset()) ?>"
                      sizes="<?= $escaper->escapeHtmlAttr($featuredProductsViewModel->getImageSizes()) ?>"
                      alt="<?= $escaper->escapeHtmlAttr(__('Field note')) ?>"
                      class="absolute inset-0 w-full h-full object-cover"
                      loading="lazy" />
+                <?php endif; ?>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
                 <span class="absolute bottom-5 start-5 text-white">
                     <span class="block text-2xs uppercase tracking-widest text-white/70 mb-1"><?= $escaper->escapeHtml(__('Field Note 001')) ?></span>
@@ -317,11 +322,12 @@ $renderProductTile = static function (array $tile) use ($escaper): void {
                         'The best storefronts do less, better. They help a shopper find the right thing, and then get out of the way.'
                     )) ?>
                 </p>
-                <a href="<?= $escaper->escapeUrl($block->getUrl('women.html')) ?>"
+                <a href="<?= $escaper->escapeUrl($primaryUrl) ?>"
                    class="text-xs sm:text-sm font-semibold uppercase tracking-widest text-base-content border-b border-base-content/40 pb-0.5">
                     <?= $escaper->escapeHtml(__('Start Browsing')) ?> <?= /* @noEscape */ $arrow ?>
                 </a>
             </div>
         </div>
     </section>
+    <?php endif; ?>
 </div>

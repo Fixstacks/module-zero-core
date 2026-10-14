@@ -1,0 +1,33 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * A form's CAPTCHA (Block\Captcha\Field): the answer field, and the image
+ * loaded from zero/captcha/refresh once the session is ready, so the page
+ * itself stays cacheable.
+ *
+ * @var \Zero\Core\Block\Captcha\Field $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+$formId = $block->getFormId();
+?>
+<div class="field captcha required" data-role="<?= $escaper->escapeHtmlAttr($formId) ?>">
+    <label for="captcha_<?= $escaper->escapeHtmlAttr($formId) ?>" class="label">
+        <span><?= $escaper->escapeHtml(__('Please type the letters and numbers below')) ?></span>
+    </label>
+    <div class="control captcha">
+        <input name="<?= $escaper->escapeHtmlAttr($block->getInputName()) ?>"
+               type="text"
+               class="input-text required-entry"
+               id="captcha_<?= $escaper->escapeHtmlAttr($formId) ?>"
+               required
+               autocomplete="off"/>
+        <div class="nested">
+            <div id="captcha-container-<?= $escaper->escapeHtmlAttr($formId) ?>"
+                 hx-get="<?= $escaper->escapeUrl($block->getRefreshUrl()) ?>"
+                 hx-trigger="zero:session-ready from:body"
+                 hx-swap="outerHTML"></div>
+        </div>
+    </div>
+</div>

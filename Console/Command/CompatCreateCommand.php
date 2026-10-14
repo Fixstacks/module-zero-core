@@ -18,15 +18,13 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Scaffolds a compat module that adapts a module to the Zero theme:
- * registration, module.xml (loaded after the original and Zero_Core), the
- * Compat\Registry entry, view/frontend/zero/tailwind.css, and optionally
- * copies of the original templates to rewrite (--template, repeatable).
+ * Scaffolds a compat module adapting a module to the Zero theme
+ * (registration, module.xml, Compat\Registry entry, tailwind.css, and
+ * template copies with --template):
  *
  *   bin/magento zero:compat:create Vendor_Module --template=path/form.phtml
  *
- * creates app/code/ZeroCompat/VendorModule; then module:enable it, run
- * setup:upgrade and rebuild the theme's CSS.
+ * → app/code/ZeroCompat/VendorModule; then enable, setup:upgrade, build CSS.
  */
 class CompatCreateCommand extends Command
 {

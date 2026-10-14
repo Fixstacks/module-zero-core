@@ -15,17 +15,9 @@ use Magento\Framework\View\Result\LayoutFactory;
 use Zero\Core\Controller\PrivateFragmentActionInterface;
 
 /**
- * "Reload captcha" as an HTMX fragment, replacing stock's
- * `data-mage-init='{"captcha":...}'` widget (no JS runs it on this theme, so
- * the button did nothing).
- *
- * Re-renders stock's DefaultCaptcha block for the same form_id through
- * Zero_Core::captcha/image.phtml (the partial the initial render uses);
- * the block's _toHtml() already generates a new image.
- *
- * A private fragment (never FPC-cached): the response mutates the visitor's
- * captcha session state. Unknown form_ids (not in customer/captcha/forms)
- * render nothing.
+ * "Reload captcha" as an HTMX fragment (stock's data-mage-init widget doesn't
+ * run here): re-renders the DefaultCaptcha block for the form_id, which makes
+ * a new image. Private, never page-cached; unknown form_ids render nothing.
  */
 class Refresh implements PrivateFragmentActionInterface
 {

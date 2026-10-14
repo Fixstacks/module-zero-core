@@ -17,16 +17,12 @@ use Magento\Store\Model\StoreManager;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
- * Core puts the store view and currency into the HTTP context (what the
- * X-Magento-Vary cookie and the full-page cache key are made of) in a plugin
- * on AbstractAction::dispatch(), so controllers that implement
- * ActionInterface directly never get them: every Zero HTMX fragment and the
- * Zero Checkout. Their vary string came out empty, and core then deletes the
- * visitor's X-Magento-Vary cookie (Response\Http::sendVary()). A visitor on
- * another store view or currency was then served, and could fill, the
- * default store view's cached pages in Varnish.
- *
- * This sets the same values the same way, only when core's plugin hasn't.
+ * Core sets the store and currency in the HTTP context (the X-Magento-Vary
+ * cookie and page cache key) in a plugin on AbstractAction::dispatch(), which
+ * controllers implementing ActionInterface directly (HTMX fragments, Zero
+ * Checkout) skip. Their empty vary deleted the visitor's cookie, so another
+ * store view could get, and fill, the default one's Varnish pages. This sets
+ * the same values when core hasn't.
  */
 class ApplyStoreContext
 {

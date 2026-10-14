@@ -19,17 +19,12 @@ use Magento\Search\Model\QueryFactory;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
- * Data for the header search box's live dropdown (see Controller\Search\Suggest).
- *
- * - getSuggestions(): AutocompleteInterface directly — stock's
- *   Ajax\Suggest controller only JSON-wraps it, and this renders HTML.
- *   `catalog/search/search_suggestion_enabled` is locked to 0 in env.php:
- *   the OpenSearch suggester ranked unrelated logged terms above exact matches
- *   ("tank" → "track"); 0 is a plain prefix match on search_query.
- * - getMatchingProducts(): search_query is only past search history, so a term
- *   nobody searched yet got no suggestions at all. This uses the same
- *   Fulltext\Collection::addSearchFilter() the search results page uses
- *   (OpenSearch relevance), gated by the min query length like stock.
+ * Data for the header search dropdown (Controller\Search\Suggest).
+ * - getSuggestions(): AutocompleteInterface, rendered as HTML.
+ *   search_suggestion_enabled is locked to 0 in env.php: the OpenSearch
+ *   suggester ranked unrelated terms first ("tank" → "track").
+ * - getMatchingProducts(): the results page's addSearchFilter() (search
+ *   history alone had nothing for new terms), gated by the min query length.
  */
 class SearchSuggest implements ArgumentInterface
 {
@@ -148,25 +143,12 @@ class SearchSuggest implements ArgumentInterface
             return [];
         }
 
-        // @var \Magento\CatalogSearch\Model\ResourceModel\Fulltext\Collection $collection
-        // (the virtualType's runtime type, see the constructor docblock).
-        //
-        // `quick_search_container` is required: the default `catalog_view_container`
-        // makes addSearchFilter() not constrain anything. It's the request name the
-        // /catalogsearch/result/ page uses.
-        //
-        // The store/visibility/price calls mirror Layer\Search\CollectionFilter::filter():
-        // without store/visibility the search returned nothing, without prices
-        // getFinalPrice() was 0.00.
-        //
-        // `thumbnail`, not `small_image`: IMAGE_DISPLAY_AREA is declared
-        // type="thumbnail", and the wrong attribute falls back to the placeholder.
-        //
-        // The price is the price info's final price, already in the display
-        // currency, so it is only formatted: getFinalPrice() is in the base
-        // currency for a simple product but already converted for a
-        // configurable, and converting it again showed 40x the price in the
-        // hryvnia store view.
+        // The virtualType's runtime type is Fulltext\Collection.
+        // `quick_search_container`: the default container doesn't filter at all.
+        // Store/visibility/price as Layer\Search\CollectionFilter does (else
+        // no results, or 0.00 prices). `thumbnail`: IMAGE_DISPLAY_AREA's type.
+        // The price info's final price is already in the display currency
+        // (getFinalPrice() isn't, for simple products), so it's only formatted.
         $collection = $this->fulltextCollectionFactory->create([
             'searchRequestName' => 'quick_search_container',
         ]);

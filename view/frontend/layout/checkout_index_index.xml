@@ -3,23 +3,14 @@
     Copyright © 2026 Roman Pasichnyk
     SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
 
-    Makes the stock checkout (checkout/index/index, the fallback when Zero
-    Checkout is disabled) work. It's Knockout-only, so RequireJS/Knockout and
-    Blank's CSS are restored on this handle only (as Hyvä does). When Zero
-    Checkout is enabled this page redirects before rendering.
-
-    - Assets removed sitewide by name can't be re-added under the same name,
-      so they come back under new names: Zero_Core::js/vendor/require.js
-      (copy of lib/web/requirejs/require.js) with Block\Requirejs\Config
-      generating requirejs-config/mixins against it, and the theme's
-      css/vendor/styles-{m,l}.css (Blank's compiled CSS, rems rescaled).
-    - sri.js is removed here and added by Block\Requirejs\Config so it lands
-      in the right asset group (see that class).
-    - cookie_config (removed sitewide) comes back as
-      zero.checkout.cookie_config; the RequireJS base URL (require.js block)
-      prints only here (the theme's page/js/require_js.phtml).
-    - The three customer.* blocks (removed sitewide) are restored:
-      customer-data's initStorage() is needed by shipping-rate selection.
+    Makes the stock (Knockout) checkout work, the fallback with Zero Checkout
+    off: RequireJS, Knockout and Blank's CSS on this handle only, as Hyvä does.
+    - Assets removed sitewide can't return under the same name: require.js is
+      Zero_Core::js/vendor/require.js (Block\Requirejs\Config builds its
+      config), the CSS css/vendor/styles-{m,l}.css.
+    - sri.js comes from Block\Requirejs\Config (asset group order).
+    - cookie_config, the RequireJS base URL and the customer.* blocks
+      (customer-data's initStorage(), needed for shipping rates) come back.
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>

@@ -2,16 +2,12 @@
  * Copyright © 2026 Roman Pasichnyk
  * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
  *
- * The visitor's session, per-visitor fragments and form_key in one request
- * (Controller\Session\Bootstrap; see Zero_Core::session/bootstrap.phtml).
- * Static file: the storefront's CSP allows no inline scripts.
- *
- * 1. Ask once for every [data-zero-fragment] on the page and the form_key,
- *    unless the browser cache below still holds them (then no request).
- * 2. Fire zero:session-ready on <body> (fragments that load on their own).
- *    Before the swaps: a swapped-in fragment must not answer it again.
- * 3. Swap each fragment in (outerHTML, as their own controllers did).
- * 4. Write the form_key into every form, now and after every HTMX swap, and
+ * The visitor's session, fragments and form_key in one request
+ * (Controller\Session\Bootstrap):
+ * 1. ask for every [data-zero-fragment] and the form_key (unless cached below);
+ * 2. fire zero:session-ready, before the swaps so swapped ones don't answer;
+ * 3. swap each fragment in (outerHTML);
+ * 4. write the form_key into every form, now and after HTMX swaps, and
  *    release forms submitted before it arrived.
  */
 (function () {
@@ -79,16 +75,11 @@
 
     /*
      * Browser cache of the fragments and form_key, as Luma's customer-data
-     * does (without its JS): most page views then need no request at all.
-     * It's thrown away when anything it could depend on changes:
-     * - private_content_version: Magento renews it on every POST (Add to
-     *   Cart, wishlist, compare, cart edits, sign in);
-     * - mage-cache-sessid: Magento deletes it on sign in/out, account
-     *   creation and whenever a new session starts; we set it again;
-     * - the page language and store view;
-     * - after 20 minutes, or when the page needs a fragment it doesn't hold.
-     * Flash messages are never cached: they're asked for only when Magento
-     * left some in the mage-messages cookie.
+     * does: most page views need no request. Dropped when
+     * private_content_version (renewed on every POST) or mage-cache-sessid
+     * (sign in/out, new session) changes, on another language or store view,
+     * after 20 minutes, or when a fragment is missing. Flash messages are
+     * never cached.
      */
     var CACHE_KEY = 'zero-private-v1';
     var CACHE_TTL = 20 * 60 * 1000;

@@ -9,18 +9,12 @@ declare(strict_types=1);
 namespace Zero\Core\Block\Requirejs;
 
 /**
- * Stock RequireJs head Config for the stock-checkout fallback only
- * (checkout_index_index.xml).
- *
- * - The parent inserts requirejs-config.js/mixins.js "after"
- *   `requirejs/require.js`, a name removed sitewide by default_head_blocks.xml.
- *   A removed asset name can never be re-added, so the parent's insert no-ops.
- *   This anchors on `Zero_Core::js/vendor/require.js` (a renamed copy) instead;
- *   bundling/minification/map logic is the parent's, copied.
- * - It also adds `Magento_Csp::js/sri.js` itself (removed from the handle's
- *   head). GroupedCollection fixes a group's render position when the group is
- *   first created, and the head-declared sri.js formed its own group in the
- *   wrong place; inserting it here joins the existing group.
+ * Stock RequireJs head config, for the stock-checkout fallback only.
+ * - The parent inserts after `requirejs/require.js`, which Zero removes
+ *   sitewide (a removed asset name can't come back), so this anchors on the
+ *   renamed copy `Zero_Core::js/vendor/require.js`.
+ * - It adds `Magento_Csp::js/sri.js` itself: declared in the head it formed
+ *   its own group in the wrong place.
  */
 class Config extends \Magento\RequireJs\Block\Html\Head\Config
 {

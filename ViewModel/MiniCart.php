@@ -16,15 +16,9 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Quote\Model\Quote\Item;
 
 /**
- * The current quote for the mini-cart fragments (count badge and popover).
- *
- * Doesn't reuse stock's Cart\Sidebar: its item renderers need a
- * rendererListName that stock only configures for Knockout, so
- * getItemHtml() would throw. Items show name/qty/price, without
- * configurable-option detail.
- *
- * getFormKey() serves the qty-update/remove forms (Zero\Checkout
- * Cart\Update); the fragment is never FPC-cached, so a plain value is fine.
+ * The quote for the mini-cart fragments. Not stock's Cart\Sidebar: its item
+ * renderers need a Knockout-only rendererListName. getFormKey() serves the
+ * update/remove forms; the fragment is never page-cached.
  */
 class MiniCart implements ArgumentInterface
 {

@@ -1,4 +1,4 @@
-# vilmate/module-zero-core — licensing
+# fixstacks/module-zero-core — licensing
 
 Copyright © 2026 Roman Pasichnyk.
 

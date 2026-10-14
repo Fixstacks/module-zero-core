@@ -3,19 +3,11 @@
     Copyright © 2026 Roman Pasichnyk
     SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
 
-    "Recently Viewed/Compared Products" widgets. Stock's RecentlyViewed/
-    RecentlyCompared render only via Knockout (renderApp()), which this theme
-    doesn't load, so they would be blank.
-
-    1. Data: the block classes are the older, server-rendered
-       Magento\Reports\Block\Product\Widget\Viewed/Compared (deprecated but
-       complete). The viewed-product tracking observer is not wired in this
-       Magento version; Zero_Core re-wires it (etc/frontend/events.xml).
-       reports/options/enabled must be 1 (store config).
-    2. Rendering: per-visitor content inside a cacheable page can't reliably
-       see the customer session, so the templates here are cacheable shells
-       that hx-get the real content from Controller\Widget\Viewed/Compared
-       (private fragments).
+    "Recently Viewed/Compared Products" widgets. Stock's render only via
+    Knockout, so these use the older server-rendered Reports widget blocks
+    (Zero_Core re-wires the viewed-product observer; reports/options/enabled
+    must be 1). The templates are cacheable shells that hx-get the content
+    from Controller\Widget\Viewed/Compared.
 -->
 <widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Widget:etc/widget.xsd">

@@ -2,15 +2,10 @@
  * Copyright © 2026 Roman Pasichnyk
  * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
  *
- * customerData.set() before customerData.initStorage() throws ("Cannot read
- * properties of undefined (reading 'set')"): its storage doesn't exist yet.
- * mage/apply starts element components (the checkout's #checkout app) before
- * the "*" ones (customer-data's own init), and which finishes first is only
- * a matter of load timing. On Magento 2.4.7 the stock checkout lost that
- * race every time (its 2 MB inline SRI hash list changes the timing):
- * checkout-data saved the email before the storage existed and the checkout
- * never rendered. Calls made that early are kept and replayed right after
- * initStorage(), so the order no longer matters.
+ * customerData.set() before initStorage() throws, and mage/apply may start
+ * the checkout app before customer-data's init (on 2.4.7 it always did, and
+ * the stock checkout never rendered). Early calls are kept and replayed
+ * after initStorage().
  */
 define(['mage/utils/wrapper'], function (wrapper) {
     'use strict';

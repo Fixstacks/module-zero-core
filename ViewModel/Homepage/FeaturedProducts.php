@@ -12,24 +12,22 @@ use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Helper\Image as ImageHelper;
 use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\Product\ImageFactory;
+use Magento\Catalog\Model\Product\Visibility;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use Magento\Framework\Pricing\Helper\Data as PricingHelper;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Zero\Core\Model\Homepage\Settings;
+use Zero\Core\Model\Pricing\CachedPrices;
 
 /**
- * Catalog data for the homepage's "The shortlist" and "New, in orbit" sections,
- * plus the two curated editorial images.
- *
- * - Shortlist: one product per top-level department (DEPARTMENT_URL_KEYS, lowest
- *   entity_id). Labeled "Featured", not "Bestseller" — the bestseller
- *   aggregation table is empty here. A flat sort would return four near-identical
- *   Gear bags.
- * - New arrivals: created_at DESC.
- * - Both exclude the Fine Jewelry subtree (it sits right after the apparel
- *   category tiles).
+ * Products for the homepage's "The shortlist" and "New, in orbit", plus the
+ * promotional sections' images and links, per Model\Homepage\Settings.
+ * - Shortlist: one product per department (a flat sort gave four alike);
+ *   "Featured", since bestseller data is often empty.
+ * - New arrivals: created_at DESC, minus the excluded categories.
  */
 class FeaturedProducts implements ArgumentInterface
 {
@@ -41,15 +39,6 @@ class FeaturedProducts implements ArgumentInterface
      */
     private const SLIDER_SIZE = 8;
     private const IMAGE_DISPLAY_AREA = 'category_page_grid';
-    private const EXCLUDED_ROOT_URL_KEY = 'fine-jewelry';
-    private const DEPARTMENT_URL_KEYS = ['women', 'men', 'gear', 'training'];
-
-    /**
-     * Hand-picked images for the "system spread" and "field note" sections, chosen
-     * for composition rather than by a query.
-     */
-    private const SYSTEM_SPREAD_IMAGE = '/w/t/wt06-blue_main_1.jpg';
-    private const EDITORIAL_QUOTE_IMAGE = '/w/t/wt09-white_main_1.jpg';
 
     /**
      * srcset widths for the two half-width editorial tiles (md:grid-cols-2 inside
@@ -68,6 +57,12 @@ class FeaturedProducts implements ArgumentInterface
     /** @var array<int, string> category-id => name, avoids re-loading the same category per product */
     private array $categoryNameCache = [];
 
+    /** @var array<int, array>|null the shortlist's tiles, once built */
+    private ?array $shortlist = null;
+
+    /** @var array<int, array>|null the new arrivals' tiles, once built */
+    private ?array $newArrivals = null;
+
     /**
      * @param ProductCollectionFactory $productCollectionFactory
      * @param CategoryCollectionFactory $categoryCollectionFactory
@@ -75,6 +70,9 @@ class FeaturedProducts implements ArgumentInterface
      * @param PricingHelper $pricingHelper
      * @param ImageFactory $productImageFactory
      * @param StoreManagerInterface $storeManager
+     * @param Visibility $visibility
+     * @param CachedPrices $prices
+     * @param Settings $settings
      */
     public function __construct(
         private readonly ProductCollectionFactory $productCollectionFactory,
@@ -82,8 +80,38 @@ class FeaturedProducts implements ArgumentInterface
         private readonly ImageHelper $imageHelper,
         private readonly PricingHelper $pricingHelper,
         private readonly ImageFactory $productImageFactory,
-        private readonly StoreManagerInterface $storeManager
+        private readonly StoreManagerInterface $storeManager,
+        private readonly Visibility $visibility,
+        private readonly CachedPrices $prices,
+        private readonly Settings $settings
     ) {
+    }
+
+    /**
+     * Whether Zero's own promotional sections show (off unless switched on).
+     */
+    public function showPromo(): bool
+    {
+        return $this->settings->showPromo();
+    }
+
+    /**
+     * Where the promotional sections' "explore" links go: the first department,
+     * or the homepage when there is none.
+     */
+    public function getPrimaryDepartmentUrl(): string
+    {
+        $departments = $this->settings->departments();
+
+        return $departments ? (string) $departments[0]->getUrl() : $this->storeManager->getStore()->getBaseUrl();
+    }
+
+    /**
+     * The new arrivals' "View all" link, or null for none.
+     */
+    public function getNewArrivalsUrl(): ?string
+    {
+        return $this->settings->newArrivalsUrl();
     }
 
     /**
@@ -92,7 +120,9 @@ class FeaturedProducts implements ArgumentInterface
     public function getSystemSpreadImageUrl(): string
     {
         $widths = self::SRCSET_WIDTHS;
-        return $this->resizedImageUrl(self::SYSTEM_SPREAD_IMAGE, (int) end($widths));
+        $path = $this->promoImagePath('spread', 0);
+
+        return $path === '' ? '' : $this->resizedImageUrl($path, (int) end($widths));
     }
 
     /**
@@ -100,7 +130,9 @@ class FeaturedProducts implements ArgumentInterface
      */
     public function getSystemSpreadImageSrcset(): string
     {
-        return $this->buildSrcset(self::SYSTEM_SPREAD_IMAGE);
+        $path = $this->promoImagePath('spread', 0);
+
+        return $path === '' ? '' : $this->buildSrcset($path);
     }
 
     /**
@@ -117,7 +149,9 @@ class FeaturedProducts implements ArgumentInterface
     public function getEditorialQuoteImageUrl(): string
     {
         $widths = self::SRCSET_WIDTHS;
-        return $this->resizedImageUrl(self::EDITORIAL_QUOTE_IMAGE, (int) end($widths));
+        $path = $this->promoImagePath('quote', 1);
+
+        return $path === '' ? '' : $this->resizedImageUrl($path, (int) end($widths));
     }
 
     /**
@@ -125,7 +159,31 @@ class FeaturedProducts implements ArgumentInterface
      */
     public function getEditorialQuoteImageSrcset(): string
     {
-        return $this->buildSrcset(self::EDITORIAL_QUOTE_IMAGE);
+        $path = $this->promoImagePath('quote', 1);
+
+        return $path === '' ? '' : $this->buildSrcset($path);
+    }
+
+    /**
+     * A promotional section's image: the configured catalog image path, or else
+     * a featured product's image (the shortlist's, then the new arrivals'),
+     * $index picking which one so the two sections differ. '' when there is none.
+     */
+    private function promoImagePath(string $which, int $index): string
+    {
+        $path = $this->settings->promoImage($which);
+        if ($path !== '') {
+            return $path;
+        }
+        $images = [];
+        foreach (array_merge($this->getShortlist(), $this->getNewArrivals()) as $tile) {
+            $image = (string) $tile['product']->getData('small_image');
+            if ($image !== '' && $image !== 'no_selection') {
+                $images[] = $image;
+            }
+        }
+
+        return $images[$index] ?? $images[0] ?? '';
     }
 
     /**
@@ -186,19 +244,11 @@ class FeaturedProducts implements ArgumentInterface
      */
     public function getShortlist(): array
     {
+        if ($this->shortlist !== null) {
+            return $this->shortlist;
+        }
         $products = [];
-        foreach (self::DEPARTMENT_URL_KEYS as $urlKey) {
-            // Under the current store's root: another website may use the same URL key.
-            $department = $this->categoryCollectionFactory->create()
-                ->addAttributeToFilter('url_key', $urlKey)
-                ->addFieldToFilter('parent_id', (int) $this->storeManager->getStore()->getRootCategoryId())
-                ->setPageSize(1)
-                ->getFirstItem();
-
-            if (!$department->getId()) {
-                continue;
-            }
-
+        foreach ($this->settings->departments() as $department) {
             // Include descendants: the sample catalog assigns products to leaf
             // categories ("Tops-Women"), not the department itself.
             $subtreeIds = [(int) $department->getId()];
@@ -239,7 +289,7 @@ class FeaturedProducts implements ArgumentInterface
             }
         }
 
-        return $this->buildTiles($products, static fn (int $index): string => __('Featured')->render());
+        return $this->shortlist = $this->buildTiles($products, static fn (int $index): string => __('Featured')->render());
     }
 
     /**
@@ -251,19 +301,22 @@ class FeaturedProducts implements ArgumentInterface
      */
     public function getNewArrivals(): array
     {
+        if ($this->newArrivals !== null) {
+            return $this->newArrivals;
+        }
         $collection = $this->baseCollection()
             ->setOrder('created_at', ProductCollection::SORT_ORDER_DESC)
             ->setPageSize(self::SLIDER_SIZE);
 
-        return $this->buildTiles(
+        return $this->newArrivals = $this->buildTiles(
             $collection->getItems(),
             static fn (int $index): string => sprintf('%02d', $index + 1)
         );
     }
 
     /**
-     * Shared base: enabled, visible, simple/configurable, in the catalog root minus
-     * Fine Jewelry, images joined.
+     * Shared base: enabled, visible, simple/configurable, minus the categories
+     * set to stay out of the new arrivals (Stores > Configuration > Zero > Homepage).
      *
      * The type filter also keeps out virtual/downloadable e2e fixtures from another
      * project on this install (newer created_at, no photos) without a SKU blocklist.
@@ -272,15 +325,10 @@ class FeaturedProducts implements ArgumentInterface
      */
     private function baseCollection(): ProductCollection
     {
-        $excludedRoot = $this->categoryCollectionFactory->create()
-            ->addAttributeToFilter('url_key', self::EXCLUDED_ROOT_URL_KEY)
-            ->setPageSize(1)
-            ->getFirstItem();
-
         $collection = $this->productTypeCollection();
-
-        if ($excludedRoot->getId()) {
-            $collection->addCategoriesFilter(['nin' => [(int) $excludedRoot->getId()]]);
+        $excluded = $this->settings->newArrivalsExcluded();
+        if ($excluded) {
+            $collection->addCategoriesFilter(['nin' => $excluded]);
         }
 
         return $collection;
@@ -295,15 +343,16 @@ class FeaturedProducts implements ArgumentInterface
      */
     private function productTypeCollection(): ProductCollection
     {
-        $notVisible = \Magento\Catalog\Model\Product\Visibility::VISIBILITY_NOT_VISIBLE;
-
         // The current store's website only: the other websites (Beautiful Ukraine,
         // Kids Karamel) have their own, newer catalogs.
+        // Enabled and visible-in-catalog through the category product index (as
+        // core's product lists and "New Products" widget do), not EAV filters on
+        // status and visibility: those scanned the whole catalog with a filesort,
+        // 55-120 ms per query, 4-5 queries per homepage render (2,000 products).
         return $this->productCollectionFactory->create()
             ->addStoreFilter()
+            ->setVisibility($this->visibility->getVisibleInCatalogIds())
             ->addAttributeToSelect(['name', 'price', 'small_image'])
-            ->addAttributeToFilter('status', \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED)
-            ->addAttributeToFilter('visibility', ['neq' => $notVisible])
             ->addAttributeToFilter('type_id', ['in' => ['simple', 'configurable']])
             ->setPageSize(self::GRID_SIZE);
     }
@@ -327,7 +376,9 @@ class FeaturedProducts implements ArgumentInterface
                 'label' => $this->firstCategoryName($product),
                 'image' => $this->imageHelper->init($product, self::IMAGE_DISPLAY_AREA)->getUrl(),
                 'name' => (string) $product->getName(),
-                'price' => $this->pricingHelper->currency($product->getFinalPrice(), true, false),
+                // The price box's amount from the block cache: a configurable's
+                // own final price is worked out from its variants, cold, ~10 ms.
+                'price' => $this->pricingHelper->currency($this->prices->get($product)['final'], true, false),
                 'url' => $product->getProductUrl(),
             ];
         }

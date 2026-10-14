@@ -19,7 +19,25 @@
             <argument name="commands" xsi:type="array">
                 <item name="zero_compat_report" xsi:type="object">Zero\Core\Console\Command\CompatReportCommand</item>
                 <item name="zero_compat_create" xsi:type="object">Zero\Core\Console\Command\CompatCreateCommand</item>
+                <item name="zero_images_warm" xsi:type="object">Zero\Core\Console\Command\ImagesWarmCommand</item>
             </argument>
         </arguments>
+    </type>
+    <!--
+        Store views at a path of the main domain (Plugin\Store\StorePathPrefix):
+        modules list theirs as its `paths` argument. Global: the admin builds their
+        links too (order emails, "View" in a store's product grid).
+    -->
+    <type name="Magento\Store\Model\Store">
+        <plugin name="zero_store_path_prefix" type="Zero\Core\Plugin\Store\StorePathPrefix"/>
+    </type>
+    <type name="Magento\Store\App\Request\PathInfoProcessor">
+        <plugin name="zero_store_path_prefix" type="Zero\Core\Plugin\Store\StorePathPrefix"/>
+    </type>
+    <type name="Magento\Store\App\Request\StorePathInfoValidator">
+        <plugin name="zero_store_path_prefix" type="Zero\Core\Plugin\Store\StorePathPrefix"/>
+    </type>
+    <type name="Magento\Store\Model\StoreResolver">
+        <plugin name="zero_store_path_prefix" type="Zero\Core\Plugin\Store\StorePathPrefix"/>
     </type>
 </config>

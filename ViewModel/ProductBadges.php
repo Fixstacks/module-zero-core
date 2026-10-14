@@ -9,26 +9,23 @@ declare(strict_types=1);
 namespace Zero\Core\ViewModel;
 
 use Magento\Catalog\Model\Product;
-use Magento\Catalog\Pricing\Price\FinalPrice;
-use Magento\Catalog\Pricing\Price\RegularPrice;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
+use Zero\Core\Model\Pricing\CachedPrices;
 
 /**
- * "New" and "Sale" badges for product cards and the product page
- * (Zero_Core::product/badges.phtml).
- *
- * - New: the product's "Set Product as New From/To" dates (news_from_date /
- *   news_to_date) include today in the store's timezone, the same dates
- *   stock's New Products widget reads. No "from" date means not new.
- * - Sale: the final price (special price, catalog price rule, tier for qty 1)
- *   is below the regular price; the label carries the rounded percentage.
- *   For a configurable both are its cheapest variant's, as the price box shows.
+ * "New" and "Sale" badges (product/badges.phtml).
+ * - New: today is within news_from_date/news_to_date (store time zone), as
+ *   stock's New Products widget reads them; no "from" date, not new.
+ * - Sale: final price below regular, with the rounded percentage; for a
+ *   configurable its cheapest variant's. Prices from CachedPrices: computed
+ *   on every render they cost a 12-product list ~55 ms.
  */
 class ProductBadges implements ArgumentInterface
 {
     public function __construct(
-        private readonly TimezoneInterface $timezone
+        private readonly TimezoneInterface $timezone,
+        private readonly CachedPrices $prices
     ) {
     }
 
@@ -65,9 +62,7 @@ class ProductBadges implements ArgumentInterface
 
     private function discountPercent(Product $product): int
     {
-        $priceInfo = $product->getPriceInfo();
-        $regular = (float) $priceInfo->getPrice(RegularPrice::PRICE_CODE)->getAmount()->getValue();
-        $final = (float) $priceInfo->getPrice(FinalPrice::PRICE_CODE)->getAmount()->getValue();
+        ['regular' => $regular, 'final' => $final] = $this->prices->get($product);
         if ($regular <= 0 || $final >= $regular) {
             return 0;
         }

@@ -3,18 +3,11 @@
  * Copyright © 2026 Roman Pasichnyk
  * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
  *
- * The session primer (see Controller\Session\Bootstrap). web/js/session.js
- * asks it once, right away, for every per-visitor fragment on the page
- * (elements with data-zero-fragment) and this visitor's form_key, swaps the
- * fragments in, then fires `zero:session-ready` for the page-specific ones
- * that still load on their own (sidebar, recently viewed/compared).
- *
- * The form_key: on FPC-cached pages the cached value belongs to whoever's
- * request was cached, so session.js writes this visitor's key into every
- * form_key input, including ones HTMX swaps in later (filters, paging). A
- * form submitted before that (a fast first click) is held and submitted as
- * soon as the key arrives, instead of failing with "Invalid Form Key"; after
- * 8 s without a key it's let through as is.
+ * The session primer (Controller\Session\Bootstrap, web/js/session.js): one
+ * request for every [data-zero-fragment] and the visitor's form_key, then
+ * `zero:session-ready`. The form_key is written into every form, also ones
+ * swapped in later (a cached page holds someone else's); a form submitted
+ * before it arrives is held, up to 8 s.
  *
  * @var \Magento\Framework\Escaper $escaper
  */

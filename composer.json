@@ -1,6 +1,6 @@
 {
-    "name": "vilmate/module-zero-core",
-    "description": "Zero for Magento Open Source: storefront core for the Zero theme (HTMX fragments, view models, private content without Knockout).",
+    "name": "fixstacks/module-zero-core",
+    "description": "Zero for Magento Open Source: storefront core for the Zero theme (HTMX fragments for private content, view models, no Knockout).",
     "type": "magento2-module",
     "version": "1.0.0",
     "license": [
@@ -12,7 +12,7 @@
             "name": "Roman Pasichnyk"
         }
     ],
-    "homepage": "https://zero.fixstacks.com",
+    "homepage": "https://fixstacks.com/zero",
     "keywords": [
         "magento",
         "magento2",
@@ -38,6 +38,7 @@
         "magento/module-config": "*",
         "magento/module-configurable-product": "*",
         "magento/module-cookie": "*",
+        "magento/module-csp": "*",
         "magento/module-customer": "*",
         "magento/module-directory": "*",
         "magento/module-offline-payments": "*",
@@ -50,6 +51,7 @@
         "magento/module-search": "*",
         "magento/module-store": "*",
         "magento/module-theme": "*",
+        "magento/module-ui": "*",
         "magento/module-url-rewrite": "*",
         "magento/module-widget": "*",
         "magento/module-wishlist": "*"

@@ -17,14 +17,10 @@ use Magento\PageCache\Model\App\Request\Http\IdentifierForSave;
 use Magento\PageCache\Model\App\Request\Http\IdentifierStoreReader;
 
 /**
- * Magento 2.4.8's built-in page cache keys pages on the HTTP context only,
- * on lookup too (IdentifierForSave is the IdentifierInterface preference),
- * when the context is still empty: every visitor gets the same key, so the
- * first store view, currency or customer group to load a page is served to
- * all (found with Zero's Arabic store view: its home page came back in
- * English). 2.4.9 keys on the X-Magento-Vary cookie first, then the
- * context; this does the same on 2.4.8 only. Varnish isn't affected (it
- * builds its own key).
+ * Magento 2.4.8's built-in page cache keys on the HTTP context only, still
+ * empty at lookup, so the first store view, currency or group to load a page
+ * is served to all (the Arabic home page came back in English). 2.4.9 keys on
+ * X-Magento-Vary first; this does the same on 2.4.8. Varnish is unaffected.
  */
 class UseVaryCookieInCacheKey
 {

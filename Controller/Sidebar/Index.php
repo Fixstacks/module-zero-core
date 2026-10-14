@@ -20,14 +20,9 @@ use Magento\Wishlist\ViewModel\WishlistData;
 use Zero\Core\Controller\PrivateFragmentActionInterface;
 
 /**
- * The sidebar's "Compare Products" and "My Wish List" blocks, behind the
- * hx-get shell in sidebar.additional (Zero_Core::sidebar/shell.phtml).
- *
- * Rendered inline, they could never show anything: Magento depersonalizes a
- * cacheable page's layout (no visitor, no customer), so both always showed their
- * empty state, even right after adding a product. Here each block renders only
- * when it has items — compare for any visitor, the wish list for a logged-in
- * customer — and an empty response leaves nothing in the sidebar.
+ * The sidebar's Compare Products and My Wish List, behind an hx-get shell:
+ * on a cacheable page they always rendered empty (Magento depersonalizes its
+ * layout). Each renders only with items; empty leaves the sidebar empty.
  */
 class Index implements PrivateFragmentActionInterface
 {

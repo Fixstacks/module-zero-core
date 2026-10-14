@@ -5,16 +5,10 @@
  * Modifications copyright © 2026 Roman Pasichnyk
  * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
  *
- * Captcha image + reload button, shared by the initial render (theme's
- * Magento_Captcha::default.phtml) and the refresh endpoint
- * (Controller\Captcha\Refresh), so a reload swap yields identical markup with
- * the same hx-get wiring. DefaultCaptcha::_toHtml() already generates a new
- * image on every render.
- *
- * The container keeps stock's id/class/data-captcha: it is the hx-target.
- * `img_height` is passed in the reload URL because stock sets it per page on
- * the wrapping Captcha block, which the fragment doesn't have (without it the
- * image rendered with height="0").
+ * Captcha image + reload button, for the first render and the refresh
+ * endpoint (same markup). The container keeps stock's id/class: it's the
+ * hx-target. `img_height` goes in the reload URL; the fragment has no
+ * wrapping Captcha block to set it (else height="0").
  */
 
 /** @var \Magento\Captcha\Block\Captcha\DefaultCaptcha $block */

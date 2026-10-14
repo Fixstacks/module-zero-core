@@ -4,25 +4,13 @@
  * Copyright © 2026 Roman Pasichnyk
  * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
  *
- * Sitewide view-model wiring and module-owned blocks:
- * - sale.reorder.sidebar gets LastOrderedItems (server-rendered instead of the
- *   Knockout-only scaffold).
- * - messages gets CookieMessages: flash messages arrive in the `mage-messages`
- *   cookie, which stock only reads from Knockout, so without it no flash
- *   message showed anywhere.
- * - zero.session.bootstrap (header.container): see Controller\Session\Bootstrap
- *   (the "Invalid Form Key" race fix).
- * - zero.product.badges: "New" / "Sale" badges that product card templates
- *   render per card (product/badges.phtml); on its own it prints nothing.
+ * Sitewide view models and module blocks: LastOrderedItems, CookieMessages
+ * (flash messages from the `mage-messages` cookie), zero.session.bootstrap
+ * (Controller\Session\Bootstrap) and zero.product.badges.
  *
- * Root must be <page>, not <layout id="default">: Page::initLayout() treats a
- * <layout id="X"> file as "custom layout" and drops the default handle, which
- * blanked the legacy loadLayout() search result pages.
- *
- * This is module layout, so it applies under EVERY theme: only add arguments to
- * blocks or declare module-owned blocks/templates here. A theme template=
- * override here breaks other themes (it fataled every page under Luma); those
- * belong in the theme's Magento_Theme/layout/default.xml.
+ * Root is <page>: a <layout id="default"> file drops the default handle.
+ * Module layout applies under EVERY theme: no template= overrides here (one
+ * broke every page under Luma); those go in the theme's layout.
  */
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

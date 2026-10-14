@@ -3,13 +3,9 @@
  * Copyright © 2026 Roman Pasichnyk
  * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
  *
- * Fragment for `zero/checkout/minicart`, loaded into the popover on click.
- *
- * Qty edits and remove post back to this same endpoint
- * (Zero\Checkout\Controller\Cart\Update): the qty input sends `qty`, remove adds
- * `remove=1` via hx-vals, and both hx-include #minicart-form-key (plain value;
- * this fragment is never cached). `hx-sync="#minicart-content:replace"` drops
- * stale responses when edits fire close together.
+ * Mini-cart popover content (zero/checkout/minicart). Qty edits and remove
+ * post to Cart\Update with #minicart-form-key (never cached);
+ * hx-sync="#minicart-content:replace" drops stale responses.
  *
  * @var \Magento\Framework\Escaper $escaper
  * @var \Zero\Core\ViewModel\MiniCart $viewModel

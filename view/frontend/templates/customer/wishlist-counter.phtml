@@ -3,13 +3,8 @@
  * Copyright © 2026 Roman Pasichnyk
  * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
  *
- * Fragment for `zero/customer/wishlistcounter`.
- *
- * The root must not trigger on `load`: hx-swap="outerHTML" inserts a new
- * element on every response, and `load` fires for each inserted element, so it
- * refetched endlessly. Only the page-rendered placeholder
- * (Magento_Wishlist::link.phtml) loads it; this root listens for
- * `wishlist:updated from:body`.
+ * zero/customer/wishlistcounter. No `load` trigger on the root (an outerHTML
+ * swap would refetch forever); it listens for `wishlist:updated from:body`.
  *
  * @var \Magento\Framework\Escaper $escaper
  * @var \Zero\Core\ViewModel\WishlistCounter $viewModel

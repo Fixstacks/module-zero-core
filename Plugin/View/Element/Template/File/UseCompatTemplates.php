@@ -15,15 +15,10 @@ use Magento\Framework\View\Element\Template\File\Resolver;
 use Zero\Core\Model\Compat\Registry;
 
 /**
- * Template fallback for compat modules (see Compat\Registry): on a Zero
- * theme, "Vendor_Module::path.phtml" resolves in this order:
- *
- * 1. the theme's own Vendor_Module/templates/path.phtml (unchanged: themes win);
- * 2. the first compat module's templates/path.phtml (or a theme override of it);
- * 3. Vendor_Module's own templates/path.phtml (unchanged).
- *
- * Templates the compat module doesn't have keep coming from the original, so
- * a compat module carries only what it changes.
+ * Template fallback for compat modules (Compat\Registry). On a Zero theme,
+ * "Vendor_Module::path.phtml" resolves to: the theme's override, then the
+ * first compat module's template, then the original. A compat module carries
+ * only what it changes.
  */
 class UseCompatTemplates
 {

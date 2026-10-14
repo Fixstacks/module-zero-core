@@ -17,24 +17,16 @@ use Magento\Framework\View\Result\LayoutFactory;
 use Zero\Core\Controller\PrivateFragmentActionInterface;
 
 /**
- * The visitor's session and all of its per-visitor bits, in one request.
+ * The visitor's session and all per-visitor bits in one request. Pages come
+ * from the page cache, so counters, account links, welcome text, messages and
+ * form_key load afterwards: once one request each (and waiting on the session
+ * lock), now session.js asks `?fragments=cartcounter,welcome,...` and gets
+ * {"fragments": {name: html}, "formKey": "..."}. Each fragment's controller
+ * still serves later refreshes.
  *
- * Every page is served from the page cache, so what depends on the visitor
- * (cart and wishlist counters, account links, welcome text, flash messages,
- * form_key) comes afterwards. It used to come as one request each, after
- * this one: six or seven Magento bootstraps per page view, and with file
- * sessions they waited for each other on the session lock. Now
- * Zero_Core::js/session.js asks once, `?fragments=cartcounter,welcome,...`,
- * and gets JSON: {"fragments": {name: html}, "formKey": "..."}; it swaps
- * each one in (same markup as each fragment's own controller, which still
- * serves the later refreshes, e.g. the cart counter on cart:updated).
- *
- * It also creates the session before anything else needs it: on a first
- * visit parallel requests each started their own, and the form_key the page
- * got belonged to another one ("Invalid Form Key" on Add to Cart).
- *
- * Without `fragments` (a page cached before this change) it answers as it
- * used to: an empty body and `HX-Trigger: zero:session-ready`.
+ * It also creates the session first: parallel requests on a first visit made
+ * their own, and the page's form_key was another one's ("Invalid Form Key").
+ * Without `fragments` (an older cached page): empty body + zero:session-ready.
  */
 class Bootstrap implements PrivateFragmentActionInterface
 {

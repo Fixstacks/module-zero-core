@@ -16,28 +16,31 @@ use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
 
 /**
- * srcset candidates for a product image, as JPEG and WebP, for <picture>.
+ * srcset candidates (JPEG + WebP) for a product image, for <picture>.
+ * Magento makes one JPEG per role (blurry on high-density screens, no WebP);
+ * this writes the image at each width into pub/media/zero/product/, framed
+ * as Magento frames it, once, and again only when the original changes;
+ * never upscaled. Placeholders and unknown URLs return null (plain <img>).
  *
- * Magento renders one resized JPEG per image role (a 240x300 card, a 700x700
- * gallery image): blurry on high-density screens, and no WebP. This writes
- * the same image at the given widths into pub/media/zero/product/, framed
- * like Magento frames it (the whole photo, centred on white in the role's
- * aspect ratio, never cropped), as JPEG and as WebP. Each file is written
- * once and again only when the original changes; a width the original is
- * too small for is left out rather than upscaled.
- *
- * The original is found from the URL Magento made (…/catalog/product/cache/
- * <hash>/w/j/file.jpg or …/catalog/product/w/j/file.jpg). Placeholders and
- * anything else come back as null: the template keeps its plain <img>.
+ * A copy is written to a temporary name and renamed into place, so a visitor
+ * never gets a half-written file and parallel requests don't trip over each
+ * other. The first view of a page still pays for its copies (~60 ms an image):
+ * bin/magento zero:images:warm makes them ahead of time (Console\Command\
+ * ImagesWarmCommand), after an import or before a launch.
  */
 class ProductPicture implements ArgumentInterface
 {
+    /** Widths offered for a product card (listings, widgets) and for the product page gallery. */
+    public const CARD_WIDTHS = [300, 600];
+    public const GALLERY_WIDTHS = [700, 1400];
+
     private const DIR = 'zero/product';
     private const JPEG_QUALITY = 82;
     private const WEBP_QUALITY = 80;
 
     /** @var array<string, array{webp: string, jpeg: string}|null> */
     private array $memo = [];
+    private int $written = 0;
 
     public function __construct(
         private readonly Filesystem $filesystem,
@@ -130,6 +133,14 @@ class ProductPicture implements ArgumentInterface
     }
 
     /**
+     * How many copies this instance wrote (zero:images:warm's progress).
+     */
+    public function written(): int
+    {
+        return $this->written;
+    }
+
+    /**
      * Writes base.jpg and base.webp unless both are newer than the original.
      *
      * @param \Magento\Framework\Filesystem\Directory\WriteInterface $media
@@ -177,11 +188,24 @@ class ProductPicture implements ArgumentInterface
         imagedestroy($original);
 
         $media->create(dirname($base));
-        $written = imagejpeg($canvas, $jpegPath, self::JPEG_QUALITY)
-            && imagewebp($canvas, $webpPath, self::WEBP_QUALITY);
+        $suffix = '.tmp-' . getmypid();
+        $written = imagejpeg($canvas, $jpegPath . $suffix, self::JPEG_QUALITY)
+            && imagewebp($canvas, $webpPath . $suffix, self::WEBP_QUALITY)
+            && rename($jpegPath . $suffix, $jpegPath)
+            && rename($webpPath . $suffix, $webpPath);
         imagedestroy($canvas);
+        if (!$written) {
+            foreach ([$base . '.jpg' . $suffix, $base . '.webp' . $suffix] as $leftover) {
+                if ($media->isExist($leftover)) {
+                    $media->delete($leftover);
+                }
+            }
 
-        return $written;
+            return false;
+        }
+        $this->written++;
+
+        return true;
     }
 
     private function mediaUrl(): string
