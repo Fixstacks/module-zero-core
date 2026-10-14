@@ -36,5 +36,10 @@ OSL-3.0 or AFL-3.0, your choice: see `NOTICE.md`.
 
 ---
 
-Zero is made by [Fixstacks](https://fixstacks.com/zero) in partnership with [Vilmate](https://vilmate.com).
+<a href="https://vilmate.com"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Fixstacks/zero/main/docs/images/vilmate-logo-dark.svg">
+  <img src="https://raw.githubusercontent.com/Fixstacks/zero/main/docs/images/vilmate-logo.svg" alt="Vilmate" height="34" align="right">
+</picture></a>
+
+Zero is made by [Fixstacks](https://fixstacks.com/zero) in partnership with [Vilmate](https://vilmate.com), a software development company.
 Documentation: https://fixstacks.com/zero/docs. Demo store: https://zero.fixstacks.com.
