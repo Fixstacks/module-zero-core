@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 80" width="260" height="80" role="img" aria-label="Luma">
+  <circle cx="40" cy="40" r="26" fill="#f2a71b"/>
+  <circle cx="40" cy="40" r="14" fill="#fff8e6"/>
+  <text x="84" y="55" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="46" font-weight="700" letter-spacing="2" fill="#1c1c1c">LUMA</text>
+</svg>
