@@ -3,7 +3,8 @@
  * Copyright © 2026 Roman Pasichnyk
  * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
  *
- * Homepage below the hero: departments, promotional sections (when on),
+ * Homepage below the hero: how to install Zero (its own demo: with the
+ * promotional sections), departments, promotional sections (when on),
  * product grids. Small muted labels use text-base-content/60 (≥4.5:1).
  * "New, in orbit" is a scroll-snap row; it shows several cards, so prev/next
  * use a small scrollBy() script while swiping stays native.
@@ -64,6 +65,46 @@ $renderProductTile = static function (array $tile) use ($escaper): void {
 };
 ?>
 <div class="zero-homepage-sections">
+
+    <?php if ($promo): ?>
+    <?php // Zero's own demo: how to get it, right under the hero. ?>
+    <section class="zero-get-started py-10 sm:py-14 border-b border-base-300" aria-labelledby="zero-get-started-title">
+        <div class="max-w-6xl mx-auto px-4 sm:px-8 grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div>
+                <span class="block text-2xs sm:text-xs font-semibold uppercase tracking-widest text-base-content/60 mb-3">
+                    <?= $escaper->escapeHtml(__('For developers / Magento Open Source 2.4.7–2.4.9')) ?>
+                </span>
+                <h2 id="zero-get-started-title" class="text-3xl sm:text-4xl font-medium tracking-tight mb-4">
+                    <?= $escaper->escapeHtml(__('Install Zero')) ?>
+                    <em class="font-display font-normal text-secondary"><?= $escaper->escapeHtml(__('in a minute.')) ?></em>
+                </h2>
+                <p class="text-base-content/80 max-w-md mb-6">
+                    <?= $escaper->escapeHtml(__('The theme and its modules come from Packagist with Composer. Then choose the Zero theme in Content > Design > Configuration.')) ?>
+                </p>
+                <div class="flex flex-wrap gap-x-6 gap-y-3 text-xs font-semibold uppercase tracking-widest">
+                    <a href="https://fixstacks.com/zero/docs" class="inline-block py-1 border-b border-base-content/40 hover:text-secondary">
+                        <?= $escaper->escapeHtml(__('Developer docs')) ?> <?= /* @noEscape */ $arrow ?>
+                    </a>
+                    <a href="https://fixstacks.com/zero/modules" class="inline-block py-1 border-b border-base-content/40 hover:text-secondary">
+                        <?= $escaper->escapeHtml(__('Every module')) ?> <?= /* @noEscape */ $arrow ?>
+                    </a>
+                    <a href="https://github.com/Fixstacks/zero" class="inline-block py-1 border-b border-base-content/40 hover:text-secondary">
+                        <?= $escaper->escapeHtml(__('GitHub')) ?> <?= /* @noEscape */ $arrow ?>
+                    </a>
+                </div>
+            </div>
+            <div class="min-w-0">
+                <pre dir="ltr" class="zero-get-started-code overflow-x-auto bg-neutral text-neutral-content p-4 sm:p-6 text-xs sm:text-sm leading-relaxed text-left" tabindex="0"
+                     aria-label="<?= $escaper->escapeHtmlAttr(__('Install commands')) ?>"><code><span class="text-neutral-content/50"># <?= $escaper->escapeHtml(__('in your Magento root')) ?></span>
+composer require fixstacks/zero
+bin/magento setup:upgrade
+bin/magento setup:di:compile
+bin/magento setup:static-content:deploy
+bin/magento cache:flush</code></pre>
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
 
     <?php if ($categories): ?>
         <section class="department-picker py-8 sm:py-10 border-b border-base-300">

@@ -54,7 +54,7 @@ class FeaturedProducts implements ArgumentInterface
      */
     private const SRCSET_SIZES = '(min-width: 768px) 50vw, 100vw';
 
-    /** @var array<int, string> category-id => name, avoids re-loading the same category per product */
+    /** @var array<string, string> category ids => the most specific one's name, avoids re-loading per product */
     private array $categoryNameCache = [];
 
     /** @var array<int, array>|null the shortlist's tiles, once built */
@@ -160,6 +160,28 @@ class FeaturedProducts implements ArgumentInterface
     public function getEditorialQuoteImageSrcset(): string
     {
         $path = $this->promoImagePath('quote', 1);
+
+        return $path === '' ? '' : $this->buildSrcset($path);
+    }
+
+    /**
+     * Resized `src` fallback for a theme's third editorial picture (Zero/usa's
+     * second journal card); the parent theme doesn't show it.
+     */
+    public function getJournalImageUrl(): string
+    {
+        $widths = self::SRCSET_WIDTHS;
+        $path = $this->promoImagePath('journal', 2);
+
+        return $path === '' ? '' : $this->resizedImageUrl($path, (int) end($widths));
+    }
+
+    /**
+     * Real, resized `srcset` candidates for the journal picture.
+     */
+    public function getJournalImageSrcset(): string
+    {
+        $path = $this->promoImagePath('journal', 2);
 
         return $path === '' ? '' : $this->buildSrcset($path);
     }
@@ -352,7 +374,10 @@ class FeaturedProducts implements ArgumentInterface
         return $this->productCollectionFactory->create()
             ->addStoreFilter()
             ->setVisibility($this->visibility->getVisibleInCatalogIds())
-            ->addAttributeToSelect(['name', 'price', 'small_image'])
+            // The special price with its dates: CachedPrices computes the final price from
+            // these products and keeps it for the badges and every other list (a tile without
+            // them cached the regular price as final: no Sale badge anywhere for a day).
+            ->addAttributeToSelect(['name', 'price', 'special_price', 'special_from_date', 'special_to_date', 'small_image'])
             ->addAttributeToFilter('type_id', ['in' => ['simple', 'configurable']])
             ->setPageSize(self::GRID_SIZE);
     }
@@ -387,7 +412,7 @@ class FeaturedProducts implements ArgumentInterface
     }
 
     /**
-     * The product's first category name, cached per category id (at most 8
+     * The name of the product's most specific category, cached per set of ids (at most 8
      * products per render).
      *
      * @param ProductInterface $product
@@ -396,24 +421,25 @@ class FeaturedProducts implements ArgumentInterface
     private function firstCategoryName(ProductInterface $product): string
     {
         /** @var \Magento\Catalog\Model\Product $product */
-        $categoryIds = $product->getCategoryIds();
-        $categoryId = $categoryIds[0] ?? null;
-
-        if ($categoryId === null) {
+        $categoryIds = array_map('intval', $product->getCategoryIds());
+        if (!$categoryIds) {
             return '';
         }
-
-        $categoryId = (int) $categoryId;
-        if (!isset($this->categoryNameCache[$categoryId])) {
-            /** @var Category $category */
+        $key = implode(',', $categoryIds);
+        if (!isset($this->categoryNameCache[$key])) {
+            // The most specific one ("Jackets"), not the first by id: that is often
+            // the store's root or a catch-all such as "What's New".
             $category = $this->categoryCollectionFactory->create()
                 ->addAttributeToSelect('name')
-                ->addFieldToFilter('entity_id', $categoryId)
+                ->addFieldToFilter('entity_id', ['in' => $categoryIds])
+                ->addFieldToFilter('level', ['gt' => 1])
+                ->setOrder('level', 'DESC')
+                ->setOrder('entity_id', 'ASC')
                 ->setPageSize(1)
                 ->getFirstItem();
-            $this->categoryNameCache[$categoryId] = (string) $category->getName();
+            $this->categoryNameCache[$key] = (string) $category->getName();
         }
 
-        return $this->categoryNameCache[$categoryId];
+        return $this->categoryNameCache[$key];
     }
 }

@@ -10,6 +10,7 @@ namespace Zero\Core\Plugin\PageCache;
 
 use Magento\Framework\App\PageCache\Identifier;
 use Magento\Framework\App\ProductMetadataInterface;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\App\Request\Http as HttpRequest;
 use Magento\Framework\App\Response\Http as HttpResponse;
 use Magento\Framework\Serialize\Serializer\Json;
@@ -27,7 +28,7 @@ class UseVaryCookieInCacheKey
     public function __construct(
         private readonly HttpRequest $request,
         private readonly Identifier $identifier,
-        private readonly IdentifierStoreReader $storeReader,
+        private readonly ObjectManagerInterface $objectManager,
         private readonly Json $serializer,
         private readonly ProductMetadataInterface $productMetadata
     ) {
@@ -45,6 +46,9 @@ class UseVaryCookieInCacheKey
         if (!$vary || !str_starts_with((string) $this->productMetadata->getVersion(), '2.4.8')) {
             return $proceed();
         }
+        // Asked for here, not injected: the class is not in every Magento version (2.4.7 has none).
+        /** @var IdentifierStoreReader $storeReader */
+        $storeReader = $this->objectManager->get(IdentifierStoreReader::class);
 
         $patterns = $this->identifier->getMarketingParameterPatterns();
         $data = [
@@ -53,6 +57,6 @@ class UseVaryCookieInCacheKey
             $vary,
         ];
 
-        return sha1($this->serializer->serialize($this->storeReader->getPageTagsWithStoreCacheTags($data)));
+        return sha1($this->serializer->serialize($storeReader->getPageTagsWithStoreCacheTags($data)));
     }
 }

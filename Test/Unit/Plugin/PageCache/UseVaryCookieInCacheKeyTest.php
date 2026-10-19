@@ -11,6 +11,7 @@ namespace Zero\Core\Test\Unit\Plugin\PageCache;
 use Magento\Framework\App\PageCache\Identifier;
 use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\App\Request\Http as HttpRequest;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\PageCache\Model\App\Request\Http\IdentifierForSave;
 use Magento\PageCache\Model\App\Request\Http\IdentifierStoreReader;
@@ -29,10 +30,12 @@ class UseVaryCookieInCacheKeyTest extends TestCase
         $identifier->method('getMarketingParameterPatterns')->willReturn(['/&?utm_source=[^&]*/']);
         $reader = $this->createStub(IdentifierStoreReader::class);
         $reader->method('getPageTagsWithStoreCacheTags')->willReturnArgument(0);
+        $objectManager = $this->createStub(ObjectManagerInterface::class);
+        $objectManager->method('get')->willReturn($reader);
         $metadata = $this->createStub(ProductMetadataInterface::class);
         $metadata->method('getVersion')->willReturn($version);
 
-        return new UseVaryCookieInCacheKey($request, $identifier, $reader, new Json(), $metadata);
+        return new UseVaryCookieInCacheKey($request, $identifier, $objectManager, new Json(), $metadata);
     }
 
     public function testOn248TheVaryCookieKeysThePage(): void

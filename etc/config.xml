@@ -40,6 +40,13 @@
             <social>
                 <enabled>1</enabled>
             </social>
+            <product_page>
+                <sticky_add_to_cart>0</sticky_add_to_cart>
+            </product_page>
+            <badges>
+                <new>1</new>
+                <sale>1</sale>
+            </badges>
             <performance>
                 <product_card_cache>1</product_card_cache>
             </performance>

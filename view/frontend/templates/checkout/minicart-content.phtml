@@ -5,7 +5,9 @@
  *
  * Mini-cart popover content (zero/checkout/minicart). Qty edits and remove
  * post to Cart\Update with #minicart-form-key (never cached);
- * hx-sync="#minicart-content:replace" drops stale responses.
+ * hx-sync="#minicart-content:replace" drops stale responses. A module adds
+ * a block to zero.checkout.minicart as "zero.minicart.top" to show above
+ * the items (Zero_FreeShippingBar's bar).
  *
  * @var \Magento\Framework\Escaper $escaper
  * @var \Zero\Core\ViewModel\MiniCart $viewModel
@@ -15,6 +17,7 @@ $items = $viewModel->getItems();
 $updateUrl = $escaper->escapeUrl($block->getUrl('zero/cart/update'));
 ?>
 <input type="hidden" id="minicart-form-key" name="form_key" value="<?= $escaper->escapeHtmlAttr($viewModel->getFormKey()) ?>" />
+<?= $block->getChildHtml('zero.minicart.top') ?>
 <?php if (empty($items)) : ?>
     <p class="minicart-empty text-sm text-base-content/60">
         <?= $escaper->escapeHtml(__('You have no items in your shopping cart.')) ?>

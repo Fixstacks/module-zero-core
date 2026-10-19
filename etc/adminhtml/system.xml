@@ -65,6 +65,35 @@
                         <field id="promo">1</field>
                     </depends>
                 </field>
+                <field id="promo_image_journal" translate="label comment" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Journal Image</label>
+                    <comment>As above, for a theme's third editorial picture (a journal card). Empty: a featured product's image.</comment>
+                    <depends>
+                        <field id="promo">1</field>
+                    </depends>
+                </field>
+            </group>
+            <group id="badges" translate="label comment" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Product Badges</label>
+                <comment>Badges on product photos in lists and above the title on the product page.</comment>
+                <field id="new" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>New</label>
+                    <comment>While today is within the product's "Set Product as New From/To" dates.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="sale" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Sale -N%</label>
+                    <comment>While the price is below the regular price (special price, catalog price rule, tier price), with the discount in percent.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="product_page" translate="label" type="text" sortOrder="16" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Product Page</label>
+                <field id="sticky_add_to_cart" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Sticky Add to Cart</label>
+                    <comment>Once the shopper scrolls past the Add to Cart button, a bar at the bottom of the screen keeps the product's name, price and the button in reach (for a product with options: "Choose options", which goes back to them).</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
             </group>
             <group id="performance" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Performance</label>
