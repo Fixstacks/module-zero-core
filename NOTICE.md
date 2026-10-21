@@ -1,4 +1,4 @@
-# fixstacks/module-zero-core — licensing
+# zerofront/module-zero-core — licensing
 
 Copyright © 2026 Roman Pasichnyk.
 

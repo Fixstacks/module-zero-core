@@ -1,8 +1,8 @@
 {
-    "name": "fixstacks/module-zero-core",
+    "name": "zerofront/module-zero-core",
     "description": "Zero for Magento Open Source: storefront core for the Zero theme (HTMX fragments for private content, view models, no Knockout).",
     "type": "magento2-module",
-    "version": "1.3.2",
+    "version": "1.3.3",
     "license": [
         "OSL-3.0",
         "AFL-3.0"
@@ -12,7 +12,7 @@
             "name": "Roman Pasichnyk"
         }
     ],
-    "homepage": "https://fixstacks.com/zero",
+    "homepage": "https://zerofront.dev",
     "keywords": [
         "magento",
         "magento2",
@@ -56,6 +56,9 @@
         "magento/module-url-rewrite": "*",
         "magento/module-widget": "*",
         "magento/module-wishlist": "*"
+    },
+    "replace": {
+        "fixstacks/module-zero-core": "self.version"
     },
     "autoload": {
         "files": [

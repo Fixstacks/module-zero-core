@@ -82,13 +82,13 @@ $renderProductTile = static function (array $tile) use ($escaper): void {
                     <?= $escaper->escapeHtml(__('The theme and its modules come from Packagist with Composer. Then choose the Zero theme in Content > Design > Configuration.')) ?>
                 </p>
                 <div class="flex flex-wrap gap-x-6 gap-y-3 text-xs font-semibold uppercase tracking-widest">
-                    <a href="https://fixstacks.com/zero/docs" class="inline-block py-1 border-b border-base-content/40 hover:text-secondary">
+                    <a href="https://zerofront.dev/docs" class="inline-block py-1 border-b border-base-content/40 hover:text-secondary">
                         <?= $escaper->escapeHtml(__('Developer docs')) ?> <?= /* @noEscape */ $arrow ?>
                     </a>
-                    <a href="https://fixstacks.com/zero/modules" class="inline-block py-1 border-b border-base-content/40 hover:text-secondary">
+                    <a href="https://zerofront.dev/modules" class="inline-block py-1 border-b border-base-content/40 hover:text-secondary">
                         <?= $escaper->escapeHtml(__('Every module')) ?> <?= /* @noEscape */ $arrow ?>
                     </a>
-                    <a href="https://github.com/Fixstacks/zero" class="inline-block py-1 border-b border-base-content/40 hover:text-secondary">
+                    <a href="https://github.com/zerofrontdev/zero" class="inline-block py-1 border-b border-base-content/40 hover:text-secondary">
                         <?= $escaper->escapeHtml(__('GitHub')) ?> <?= /* @noEscape */ $arrow ?>
                     </a>
                 </div>
@@ -96,7 +96,7 @@ $renderProductTile = static function (array $tile) use ($escaper): void {
             <div class="min-w-0">
                 <pre dir="ltr" class="zero-get-started-code overflow-x-auto bg-neutral text-neutral-content p-4 sm:p-6 text-xs sm:text-sm leading-relaxed text-left" tabindex="0"
                      aria-label="<?= $escaper->escapeHtmlAttr(__('Install commands')) ?>"><code><span class="text-neutral-content/50"># <?= $escaper->escapeHtml(__('in your Magento root')) ?></span>
-composer require fixstacks/zero
+composer require zerofront/zero
 bin/magento setup:upgrade
 bin/magento setup:di:compile
 bin/magento setup:static-content:deploy
